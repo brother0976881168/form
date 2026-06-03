@@ -1,0 +1,1123 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>名單管理後台</title>
+
+  <style>
+    :root {
+      --bg: #F4F0E8;
+      --card: #EDE8DC;
+      --gold: #C49A30;
+      --deep-gold: #8B6B1E;
+      --black: #1A1714;
+      --white: #ffffff;
+      --line: rgba(139, 107, 30, 0.25);
+      --muted: #746d63;
+      --danger: #9b1c1c;
+      --ok: #1d7a3a;
+      --warn: #b7791f;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--black);
+      font-family: "Noto Sans TC", "Microsoft JhengHei", Arial, sans-serif;
+    }
+
+    .page {
+      width: 100%;
+      max-width: 1500px;
+      margin: 0 auto;
+      padding: 18px;
+    }
+
+    h1 {
+      margin: 0 0 16px;
+      font-size: 24px;
+      color: var(--deep-gold);
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 16px;
+      margin-bottom: 16px;
+      box-shadow: 0 8px 24px rgba(26, 23, 20, 0.06);
+    }
+
+    .login-box {
+      max-width: 420px;
+      margin: 70px auto;
+    }
+
+    label {
+      display: block;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+
+    input,
+    select,
+    textarea,
+    button {
+      font-family: inherit;
+      font-size: 15px;
+    }
+
+    input,
+    select,
+    textarea {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 9px 10px;
+      background: #fffdf8;
+      color: var(--black);
+      outline: none;
+    }
+
+    textarea {
+      min-width: 180px;
+      min-height: 44px;
+      resize: vertical;
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus {
+      border-color: var(--gold);
+      box-shadow: 0 0 0 3px rgba(196, 154, 48, 0.16);
+    }
+
+    .btn {
+      border: none;
+      border-radius: 999px;
+      background: var(--gold);
+      color: #fff;
+      font-weight: 800;
+      padding: 10px 18px;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .btn.secondary {
+      background: var(--deep-gold);
+    }
+
+    .btn.small {
+      padding: 7px 12px;
+      font-size: 13px;
+    }
+
+    .btn:disabled {
+      opacity: 0.55;
+      cursor: not-allowed;
+    }
+
+    .error {
+      display: none;
+      background: #fff1f1;
+      color: var(--danger);
+      border-radius: 10px;
+      padding: 10px 12px;
+      margin-bottom: 12px;
+      font-weight: 700;
+      line-height: 1.6;
+    }
+
+    .success {
+      display: none;
+      background: #effaf2;
+      color: var(--ok);
+      border-radius: 10px;
+      padding: 10px 12px;
+      margin-bottom: 12px;
+      font-weight: 700;
+      line-height: 1.6;
+    }
+
+    .topbar {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .stat {
+      background: #fffdf8;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 12px;
+    }
+
+    .stat-title {
+      font-size: 13px;
+      color: var(--muted);
+      margin-bottom: 4px;
+    }
+
+    .stat-value {
+      font-size: 22px;
+      font-weight: 900;
+      color: var(--deep-gold);
+    }
+
+    .source-grid {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .filter-grid {
+      display: grid;
+      grid-template-columns: 1.5fr repeat(5, 1fr);
+      gap: 10px;
+      align-items: end;
+    }
+
+    .table-tools {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 10px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .table-wrap {
+      overflow-x: auto;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: #fffdf8;
+    }
+
+    table {
+      border-collapse: collapse;
+      min-width: 2400px;
+      width: 100%;
+    }
+
+    th,
+    td {
+      border-bottom: 1px solid rgba(139, 107, 30, 0.18);
+      border-right: 1px solid rgba(139, 107, 30, 0.12);
+      padding: 8px;
+      vertical-align: middle;
+      font-size: 14px;
+      text-align: left;
+      white-space: nowrap;
+    }
+
+    th {
+      position: sticky;
+      top: 0;
+      z-index: 1;
+      background: #e4dccd;
+      color: var(--black);
+      font-weight: 900;
+    }
+
+    tr:hover td {
+      background: rgba(196, 154, 48, 0.06);
+    }
+
+    .avatar {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 1px solid var(--line);
+      background: #ddd;
+      display: block;
+    }
+
+    .avatar-placeholder {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      background: #d4ccbd;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 4px 8px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .badge.ok {
+      background: #e8f7ee;
+      color: var(--ok);
+    }
+
+    .badge.no {
+      background: #fff1f1;
+      color: var(--danger);
+    }
+
+    .badge.wait {
+      background: #fff6df;
+      color: var(--warn);
+    }
+
+    .editable-input,
+    .editable-select,
+    .editable-textarea {
+      min-width: 150px;
+    }
+
+    .note-field {
+      min-width: 220px;
+    }
+
+    .pagination {
+      display: flex;
+      gap: 8px;
+      justify-content: center;
+      align-items: center;
+      margin-top: 12px;
+      flex-wrap: wrap;
+    }
+
+    .pagination button {
+      border: 1px solid var(--line);
+      background: #fffdf8;
+      border-radius: 10px;
+      padding: 8px 12px;
+      cursor: pointer;
+    }
+
+    .pagination button.active {
+      background: var(--gold);
+      color: #fff;
+      font-weight: 900;
+    }
+
+    .saving {
+      color: var(--warn);
+      font-size: 12px;
+      margin-top: 4px;
+    }
+
+    .saved {
+      color: var(--ok);
+      font-size: 12px;
+      margin-top: 4px;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    @media (max-width: 900px) {
+      .stats-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .source-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .filter-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .topbar {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="page">
+    <div id="loginView" class="login-box card">
+      <h1>名單管理後台</h1>
+      <div id="loginError" class="error"></div>
+
+      <div style="margin-bottom:12px;">
+        <label for="passwordInput">後台密碼</label>
+        <input id="passwordInput" type="password" autocomplete="current-password" />
+      </div>
+
+      <button class="btn" onclick="login()">登入</button>
+    </div>
+
+    <div id="adminView" class="hidden">
+      <div class="topbar">
+        <h1>名單管理後台</h1>
+        <div>
+          <button class="btn secondary" onclick="reloadAll()">重新整理</button>
+          <button class="btn" onclick="logout()">登出</button>
+        </div>
+      </div>
+
+      <div id="globalError" class="error"></div>
+      <div id="globalSuccess" class="success"></div>
+
+      <div class="card">
+        <h2 style="margin:0 0 12px;font-size:18px;color:var(--deep-gold);">統計報表</h2>
+
+        <div class="stats-grid">
+          <div class="stat">
+            <div class="stat-title">總人數</div>
+            <div id="statTotal" class="stat-value">0</div>
+          </div>
+
+          <div class="stat">
+            <div class="stat-title">已綁定LINE數</div>
+            <div id="statLineBindYes" class="stat-value">0</div>
+          </div>
+
+          <div class="stat">
+            <div class="stat-title">未綁定LINE數</div>
+            <div id="statLineBindNo" class="stat-value">0</div>
+          </div>
+
+          <div class="stat">
+            <div class="stat-title">已加官方LINE好友數</div>
+            <div id="statFriendYes" class="stat-value">0</div>
+          </div>
+
+          <div class="stat">
+            <div class="stat-title">未加官方LINE好友數</div>
+            <div id="statFriendNo" class="stat-value">0</div>
+          </div>
+
+          <div class="stat">
+            <div class="stat-title">透過簡訊綁定LINE人數</div>
+            <div id="statSmsBind" class="stat-value">0</div>
+          </div>
+        </div>
+
+        <h3 style="margin:16px 0 8px;font-size:16px;color:var(--deep-gold);">各來源名單數</h3>
+        <div id="sourceStats" class="source-grid"></div>
+
+        <h3 style="margin:16px 0 8px;font-size:16px;color:var(--deep-gold);">各來源結案數</h3>
+        <div id="sourceCloseStats" class="source-grid"></div>
+      </div>
+
+      <div class="card">
+        <h2 style="margin:0 0 12px;font-size:18px;color:var(--deep-gold);">篩選</h2>
+
+        <div class="filter-grid">
+          <div>
+            <label for="keywordFilter">關鍵字搜尋</label>
+            <input id="keywordFilter" type="text" placeholder="姓名、手機、LINE顯示名稱" oninput="applyFilters()" />
+          </div>
+
+          <div>
+            <label for="sourceFilter">來源平台</label>
+            <select id="sourceFilter" onchange="applyFilters()">
+              <option value="">全部</option>
+              <option value="Facebook">Facebook</option>
+              <option value="Instagram">Instagram</option>
+              <option value="TikTok">TikTok</option>
+              <option value="簡訊">簡訊</option>
+              <option value="其他">其他</option>
+            </select>
+          </div>
+
+          <div>
+            <label for="lineBindFilter">LINE綁定狀態</label>
+            <select id="lineBindFilter" onchange="applyFilters()">
+              <option value="">全部</option>
+              <option value="已綁定">已綁定</option>
+              <option value="未綁定">未綁定</option>
+            </select>
+          </div>
+
+          <div>
+            <label for="friendFilter">官方LINE好友狀態</label>
+            <select id="friendFilter" onchange="applyFilters()">
+              <option value="">全部</option>
+              <option value="是">是</option>
+              <option value="否">否</option>
+              <option value="待確認">待確認</option>
+            </select>
+          </div>
+
+          <div>
+            <label for="statusFilter">申請狀態</label>
+            <select id="statusFilter" onchange="applyFilters()">
+              <option value="">全部</option>
+              <option value="未聯絡">未聯絡</option>
+              <option value="已聯絡">已聯絡</option>
+              <option value="未回覆">未回覆</option>
+              <option value="失聯">失聯</option>
+              <option value="黑名單">黑名單</option>
+              <option value="結案">結案</option>
+            </select>
+          </div>
+
+          <div>
+            <label for="collateralFilter">擔保品類型</label>
+            <select id="collateralFilter" onchange="applyFilters()">
+              <option value="">全部</option>
+              <option value="汽車">汽車</option>
+              <option value="機車">機車</option>
+              <option value="房屋">房屋</option>
+              <option value="土地">土地</option>
+              <option value="名錶">名錶</option>
+              <option value="名牌包">名牌包</option>
+              <option value="黃金">黃金</option>
+              <option value="其他貴金屬">其他貴金屬</option>
+              <option value="機械設備">機械設備</option>
+              <option value="農用機具">農用機具</option>
+              <option value="3C產品">3C產品</option>
+              <option value="家電用品">家電用品</option>
+              <option value="無擔保品">無擔保品</option>
+              <option value="其他擔保品">其他擔保品</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="table-tools">
+          <div id="listCount">共 0 筆</div>
+          <div>每頁 50 筆，填表時間由新到舊</div>
+        </div>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>填表時間</th>
+                <th>來源平台</th>
+                <th>姓名</th>
+                <th>手機</th>
+                <th>資金需求</th>
+                <th>擔保品</th>
+                <th>LINE頭像</th>
+                <th>LINE顯示名稱</th>
+                <th>LINE綁定狀態</th>
+                <th>官方LINE好友狀態</th>
+                <th>重新檢查</th>
+                <th>簡訊發送次數</th>
+                <th>簡訊發送成功次數</th>
+                <th>最後簡訊發送時間</th>
+                <th>最後簡訊成功時間</th>
+                <th>透過簡訊綁定LINE</th>
+                <th>最後聯絡時間</th>
+                <th>申請狀態</th>
+                <th>備註1</th>
+                <th>備註2</th>
+                <th>備註3</th>
+                <th>備註4</th>
+                <th>結案時間</th>
+              </tr>
+            </thead>
+            <tbody id="tableBody"></tbody>
+          </table>
+        </div>
+
+        <div id="pagination" class="pagination"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const API_URL = "https://script.google.com/macros/s/AKfycbxtMnPWrtIkJHL9Q8z7pdCx-RWg8_KVmdGtLYI8Iy1AR2ei13mE3I1jSqm6gEhnTJ7Gpg/exec";
+    const PAGE_SIZE = 50;
+
+    const COLLATERAL_FIELDS = [
+      "汽車",
+      "機車",
+      "房屋",
+      "土地",
+      "名錶",
+      "名牌包",
+      "黃金",
+      "其他貴金屬",
+      "機械設備",
+      "農用機具",
+      "3C產品",
+      "家電用品",
+      "無擔保品",
+      "其他擔保品"
+    ];
+
+    const SOURCE_LIST = ["Facebook", "Instagram", "TikTok", "簡訊", "其他"];
+    const STATUS_LIST = ["未聯絡", "已聯絡", "未回覆", "失聯", "黑名單", "結案"];
+
+    let allRows = [];
+    let filteredRows = [];
+    let currentPage = 1;
+    let adminPassword = "";
+
+    function login() {
+      const password = document.getElementById("passwordInput").value.trim();
+      if (!password) {
+        showLoginError("請輸入後台密碼");
+        return;
+      }
+
+      adminPassword = password;
+      sessionStorage.setItem("adminPassword", password);
+      hideLoginError();
+      loadData();
+    }
+
+    function logout() {
+      sessionStorage.removeItem("adminPassword");
+      adminPassword = "";
+      allRows = [];
+      filteredRows = [];
+      document.getElementById("adminView").classList.add("hidden");
+      document.getElementById("loginView").classList.remove("hidden");
+      document.getElementById("passwordInput").value = "";
+    }
+
+    function init() {
+      const savedPassword = sessionStorage.getItem("adminPassword") || "";
+      if (savedPassword) {
+        adminPassword = savedPassword;
+        document.getElementById("loginView").classList.add("hidden");
+        document.getElementById("adminView").classList.remove("hidden");
+        loadData();
+      }
+    }
+
+    function reloadAll() {
+      loadData();
+    }
+
+    function loadData() {
+      clearGlobalMessage();
+
+      jsonp({
+        action: "adminList",
+        password: adminPassword
+      }, "handleAdminList", function (res) {
+        if (!res || !res.ok) {
+          showGlobalError(res && res.message ? res.message : "讀取失敗");
+
+          if (String(res && res.message || "").includes("密碼")) {
+            logout();
+            showLoginError("後台密碼錯誤");
+          }
+
+          return;
+        }
+
+        document.getElementById("loginView").classList.add("hidden");
+        document.getElementById("adminView").classList.remove("hidden");
+
+        allRows = (res.rows || []).map(normalizeRow);
+        sortRowsByTimeDesc(allRows);
+        renderStats(allRows);
+        applyFilters();
+      });
+    }
+
+    function normalizeRow(row) {
+      const normalized = Object.assign({}, row);
+
+      normalized._collateralText = getCollateralText(row);
+      normalized._searchText = [
+        row["姓名"] || "",
+        row["手機"] || "",
+        row["LINE顯示名稱"] || ""
+      ].join(" ").toLowerCase();
+
+      return normalized;
+    }
+
+    function sortRowsByTimeDesc(rows) {
+      rows.sort(function (a, b) {
+        return parseDateTime(b["填表時間"]) - parseDateTime(a["填表時間"]);
+      });
+    }
+
+    function parseDateTime(value) {
+      if (!value) return 0;
+      const text = String(value).replace(/\//g, "-");
+      const date = new Date(text);
+      const time = date.getTime();
+      return isNaN(time) ? 0 : time;
+    }
+
+    function applyFilters() {
+      const keyword = document.getElementById("keywordFilter").value.trim().toLowerCase();
+      const source = document.getElementById("sourceFilter").value;
+      const lineBind = document.getElementById("lineBindFilter").value;
+      const friend = document.getElementById("friendFilter").value;
+      const status = document.getElementById("statusFilter").value;
+      const collateral = document.getElementById("collateralFilter").value;
+
+      filteredRows = allRows.filter(function (row) {
+        if (keyword && !row._searchText.includes(keyword)) return false;
+        if (source && row["來源平台"] !== source) return false;
+        if (lineBind && row["LINE綁定狀態"] !== lineBind) return false;
+        if (friend && row["官方LINE好友狀態"] !== friend) return false;
+        if (status && row["申請狀態"] !== status) return false;
+        if (collateral && row[collateral] !== "是") return false;
+        return true;
+      });
+
+      currentPage = 1;
+      renderTable();
+      renderPagination();
+    }
+
+    function renderStats(rows) {
+      const total = rows.length;
+      const lineBindYes = rows.filter(r => r["LINE綁定狀態"] === "已綁定").length;
+      const lineBindNo = rows.filter(r => r["LINE綁定狀態"] !== "已綁定").length;
+      const friendYes = rows.filter(r => r["官方LINE好友狀態"] === "是").length;
+      const friendNo = rows.filter(r => r["官方LINE好友狀態"] === "否").length;
+      const smsBind = rows.filter(r => String(r["透過簡訊綁定LINE"] || "").trim() !== "").length;
+
+      document.getElementById("statTotal").textContent = total;
+      document.getElementById("statLineBindYes").textContent = lineBindYes;
+      document.getElementById("statLineBindNo").textContent = lineBindNo;
+      document.getElementById("statFriendYes").textContent = friendYes;
+      document.getElementById("statFriendNo").textContent = friendNo;
+      document.getElementById("statSmsBind").textContent = smsBind;
+
+      renderSourceStats(rows);
+      renderSourceCloseStats(rows);
+    }
+
+    function renderSourceStats(rows) {
+      const box = document.getElementById("sourceStats");
+      box.innerHTML = "";
+
+      SOURCE_LIST.forEach(function (source) {
+        const count = rows.filter(r => r["來源平台"] === source).length;
+        box.appendChild(createStatBox(source, count));
+      });
+    }
+
+    function renderSourceCloseStats(rows) {
+      const box = document.getElementById("sourceCloseStats");
+      box.innerHTML = "";
+
+      SOURCE_LIST.forEach(function (source) {
+        const count = rows.filter(r => r["來源平台"] === source && r["申請狀態"] === "結案").length;
+        box.appendChild(createStatBox(source, count));
+      });
+    }
+
+    function createStatBox(title, value) {
+      const div = document.createElement("div");
+      div.className = "stat";
+      div.innerHTML = '<div class="stat-title">' + escapeHtml(title) + '</div><div class="stat-value">' + value + '</div>';
+      return div;
+    }
+
+    function renderTable() {
+      const tbody = document.getElementById("tableBody");
+      tbody.innerHTML = "";
+
+      document.getElementById("listCount").textContent = "共 " + filteredRows.length + " 筆";
+
+      const start = (currentPage - 1) * PAGE_SIZE;
+      const rows = filteredRows.slice(start, start + PAGE_SIZE);
+
+      rows.forEach(function (row) {
+        const tr = document.createElement("tr");
+        const applyId = row["申請編號"] || "";
+
+        tr.innerHTML = `
+          <td>${escapeHtml(row["填表時間"] || "")}</td>
+          <td>${escapeHtml(row["來源平台"] || "")}</td>
+          <td>${escapeHtml(row["姓名"] || "")}</td>
+          <td>${escapeHtml(cleanDisplayPhone(row["手機"] || ""))}</td>
+          <td>${escapeHtml(row["資金需求"] || "")}</td>
+          <td>${escapeHtml(row._collateralText || "")}</td>
+          <td>${renderAvatar(row["LINE頭像網址"])}</td>
+          <td>${escapeHtml(row["LINE顯示名稱"] || "")}</td>
+          <td>${renderBadge(row["LINE綁定狀態"])}</td>
+          <td data-friend-cell="${escapeAttr(applyId)}">${renderFriendBadge(row["官方LINE好友狀態"])}</td>
+          <td>
+            <button class="btn small secondary" onclick="recheckFriend('${escapeJs(applyId)}', this)">重新檢查</button>
+          </td>
+          <td>${escapeHtml(row["簡訊發送次數"] || "0")}</td>
+          <td>${escapeHtml(row["簡訊發送成功次數"] || "0")}</td>
+          <td>${escapeHtml(row["最後簡訊發送時間"] || "")}</td>
+          <td>${escapeHtml(row["最後簡訊成功時間"] || "")}</td>
+          <td>${escapeHtml(row["透過簡訊綁定LINE"] || "")}</td>
+          <td>
+            <input class="editable-input" type="text" value="${escapeAttr(row["最後聯絡時間"] || "")}" 
+              onchange="autoSave('${escapeJs(applyId)}', 'lastContactTime', this.value, this)">
+          </td>
+          <td>
+            <select class="editable-select" onchange="autoSave('${escapeJs(applyId)}', 'status', this.value, this)">
+              ${renderStatusOptions(row["申請狀態"] || "")}
+            </select>
+          </td>
+          <td>
+            <textarea class="editable-textarea note-field" onchange="autoSave('${escapeJs(applyId)}', 'note1', this.value, this)">${escapeHtml(row["備註1"] || "")}</textarea>
+          </td>
+          <td>
+            <textarea class="editable-textarea note-field" onchange="autoSave('${escapeJs(applyId)}', 'note2', this.value, this)">${escapeHtml(row["備註2"] || "")}</textarea>
+          </td>
+          <td>
+            <textarea class="editable-textarea note-field" onchange="autoSave('${escapeJs(applyId)}', 'note3', this.value, this)">${escapeHtml(row["備註3"] || "")}</textarea>
+          </td>
+          <td>
+            <textarea class="editable-textarea note-field" onchange="autoSave('${escapeJs(applyId)}', 'note4', this.value, this)">${escapeHtml(row["備註4"] || "")}</textarea>
+          </td>
+          <td>
+            <input class="editable-input" type="text" value="${escapeAttr(row["結案時間"] || "")}" 
+              onchange="autoSave('${escapeJs(applyId)}', 'closeTime', this.value, this)">
+          </td>
+        `;
+
+        tbody.appendChild(tr);
+      });
+    }
+
+    function renderPagination() {
+      const box = document.getElementById("pagination");
+      box.innerHTML = "";
+
+      const pageCount = Math.max(1, Math.ceil(filteredRows.length / PAGE_SIZE));
+
+      const prev = document.createElement("button");
+      prev.textContent = "上一頁";
+      prev.disabled = currentPage <= 1;
+      prev.onclick = function () {
+        currentPage--;
+        renderTable();
+        renderPagination();
+      };
+      box.appendChild(prev);
+
+      const startPage = Math.max(1, currentPage - 2);
+      const endPage = Math.min(pageCount, currentPage + 2);
+
+      for (let i = startPage; i <= endPage; i++) {
+        const btn = document.createElement("button");
+        btn.textContent = i;
+        btn.className = i === currentPage ? "active" : "";
+        btn.onclick = function () {
+          currentPage = i;
+          renderTable();
+          renderPagination();
+        };
+        box.appendChild(btn);
+      }
+
+      const next = document.createElement("button");
+      next.textContent = "下一頁";
+      next.disabled = currentPage >= pageCount;
+      next.onclick = function () {
+        currentPage++;
+        renderTable();
+        renderPagination();
+      };
+      box.appendChild(next);
+    }
+
+    function autoSave(applyId, field, value, el) {
+      clearGlobalMessage();
+
+      const params = {
+        action: "adminUpdate",
+        password: adminPassword,
+        applyId: applyId
+      };
+
+      params[field] = value;
+
+      markSaving(el);
+
+      jsonp(params, "handleAutoSave_" + Date.now(), function (res) {
+        if (!res || !res.ok) {
+          markSaved(el, false);
+          showGlobalError(res && res.message ? res.message : "自動儲存失敗");
+          return;
+        }
+
+        updateLocalRow(applyId, field, value);
+        markSaved(el, true);
+
+        if (field === "status" && value === "結案") {
+          setTimeout(loadData, 700);
+        }
+      });
+    }
+
+    function updateLocalRow(applyId, field, value) {
+      const map = {
+        lastContactTime: "最後聯絡時間",
+        status: "申請狀態",
+        note1: "備註1",
+        note2: "備註2",
+        note3: "備註3",
+        note4: "備註4",
+        closeTime: "結案時間"
+      };
+
+      const header = map[field];
+      if (!header) return;
+
+      const row = allRows.find(r => r["申請編號"] === applyId);
+      if (row) {
+        row[header] = value;
+      }
+    }
+
+    function recheckFriend(applyId, btn) {
+      if (!applyId) {
+        showGlobalError("缺少申請編號");
+        return;
+      }
+
+      btn.disabled = true;
+      btn.textContent = "檢查中...";
+
+      jsonp({
+        action: "recheckOfficialLineFriend",
+        password: adminPassword,
+        applyId: applyId
+      }, "handleRecheckFriend_" + Date.now(), function (res) {
+        btn.disabled = false;
+        btn.textContent = "重新檢查";
+
+        if (!res || !res.ok) {
+          showGlobalError(res && res.message ? res.message : "重新檢查失敗");
+          return;
+        }
+
+        const status = res.officialLineFriendStatus || "";
+        const cell = document.querySelector('[data-friend-cell="' + cssEscape(applyId) + '"]');
+        if (cell) {
+          cell.innerHTML = renderFriendBadge(status);
+        }
+
+        const row = allRows.find(r => r["申請編號"] === applyId);
+        if (row) {
+          row["官方LINE好友狀態"] = status;
+        }
+
+        renderStats(allRows);
+        showGlobalSuccess("官方LINE好友狀態已更新：" + status);
+      });
+    }
+
+    function getCollateralText(row) {
+      const list = [];
+
+      COLLATERAL_FIELDS.forEach(function (field) {
+        if (row[field] === "是") {
+          list.push(field);
+        }
+      });
+
+      const otherText = row["其他擔保品說明"];
+      if (otherText) {
+        list.push("說明：" + otherText);
+      }
+
+      return list.join("、");
+    }
+
+    function renderAvatar(url) {
+      if (!url) {
+        return '<div class="avatar-placeholder">無</div>';
+      }
+
+      return '<img class="avatar" src="' + escapeAttr(url) + '" alt="">';
+    }
+
+    function renderBadge(value) {
+      const text = value || "";
+      if (text === "已綁定") {
+        return '<span class="badge ok">已綁定</span>';
+      }
+
+      if (text === "未綁定") {
+        return '<span class="badge no">未綁定</span>';
+      }
+
+      return '<span class="badge wait">' + escapeHtml(text || "未記錄") + '</span>';
+    }
+
+    function renderFriendBadge(value) {
+      const text = value || "";
+      if (text === "是") {
+        return '<span class="badge ok">是</span>';
+      }
+
+      if (text === "否") {
+        return '<span class="badge no">否</span>';
+      }
+
+      if (text === "待確認") {
+        return '<span class="badge wait">待確認</span>';
+      }
+
+      return '<span class="badge wait">未記錄</span>';
+    }
+
+    function renderStatusOptions(current) {
+      return STATUS_LIST.map(function (status) {
+        const selected = status === current ? "selected" : "";
+        return '<option value="' + escapeAttr(status) + '" ' + selected + '>' + escapeHtml(status) + '</option>';
+      }).join("");
+    }
+
+    function cleanDisplayPhone(phone) {
+      return String(phone || "").replace(/^'/, "");
+    }
+
+    function jsonp(params, callbackName, callback) {
+      const cb = callbackName.replace(/[^\w]/g, "_");
+
+      window[cb] = function (res) {
+        callback(res);
+        setTimeout(function () {
+          delete window[cb];
+          const old = document.getElementById(cb);
+          if (old) old.remove();
+        }, 500);
+      };
+
+      params.callback = cb;
+
+      const query = new URLSearchParams();
+      Object.keys(params).forEach(function (key) {
+        query.set(key, params[key]);
+      });
+
+      const script = document.createElement("script");
+      script.id = cb;
+      script.src = API_URL + "?" + query.toString();
+      document.body.appendChild(script);
+    }
+
+    function showLoginError(message) {
+      const box = document.getElementById("loginError");
+      box.textContent = message;
+      box.style.display = "block";
+    }
+
+    function hideLoginError() {
+      const box = document.getElementById("loginError");
+      box.textContent = "";
+      box.style.display = "none";
+    }
+
+    function showGlobalError(message) {
+      const box = document.getElementById("globalError");
+      box.textContent = message;
+      box.style.display = "block";
+
+      const ok = document.getElementById("globalSuccess");
+      ok.textContent = "";
+      ok.style.display = "none";
+    }
+
+    function showGlobalSuccess(message) {
+      const box = document.getElementById("globalSuccess");
+      box.textContent = message;
+      box.style.display = "block";
+
+      const err = document.getElementById("globalError");
+      err.textContent = "";
+      err.style.display = "none";
+    }
+
+    function clearGlobalMessage() {
+      document.getElementById("globalError").style.display = "none";
+      document.getElementById("globalSuccess").style.display = "none";
+    }
+
+    function markSaving(el) {
+      removeStatusText(el);
+
+      const div = document.createElement("div");
+      div.className = "saving";
+      div.textContent = "儲存中...";
+      el.parentNode.appendChild(div);
+    }
+
+    function markSaved(el, ok) {
+      removeStatusText(el);
+
+      const div = document.createElement("div");
+      div.className = ok ? "saved" : "saving";
+      div.textContent = ok ? "已儲存" : "儲存失敗";
+      el.parentNode.appendChild(div);
+
+      setTimeout(function () {
+        if (div && div.parentNode) {
+          div.parentNode.removeChild(div);
+        }
+      }, 1200);
+    }
+
+    function removeStatusText(el) {
+      const parent = el.parentNode;
+      const old = parent.querySelector(".saving, .saved");
+      if (old) old.remove();
+    }
+
+    function escapeHtml(value) {
+      return String(value || "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+
+    function escapeAttr(value) {
+      return escapeHtml(value);
+    }
+
+    function escapeJs(value) {
+      return String(value || "")
+        .replace(/\\/g, "\\\\")
+        .replace(/'/g, "\\'")
+        .replace(/\n/g, "\\n")
+        .replace(/\r/g, "");
+    }
+
+    function cssEscape(value) {
+      if (window.CSS && CSS.escape) {
+        return CSS.escape(value);
+      }
+
+      return String(value || "").replace(/"/g, '\\"');
+    }
+
+    document.getElementById("passwordInput").addEventListener("keydown", function (e) {
+      if (e.key === "Enter") {
+        login();
+      }
+    });
+
+    init();
+  </script>
+</body>
+</html>
