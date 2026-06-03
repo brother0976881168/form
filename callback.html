@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>LINE 綁定中</title>
+  <title>資料確認中</title>
 
   <style>
     :root {
@@ -66,6 +66,12 @@
       font-weight: 800;
     }
 
+    .sub {
+      margin-top: 14px;
+      font-size: 14px;
+      color: #6f675d;
+    }
+
     .error {
       color: var(--error);
       font-weight: 700;
@@ -75,9 +81,10 @@
 
 <body>
   <div class="card">
-    <h1 id="title">LINE 綁定中</h1>
-    <p id="message">請稍候，系統正在完成綁定...</p>
+    <h1 id="title">資料確認中</h1>
+    <p id="message">請稍候，系統正在完成資料確認...</p>
     <div id="buttonBox"></div>
+    <p id="subText" class="sub"></p>
   </div>
 
   <script>
@@ -91,39 +98,40 @@
       msg.className = isError ? "error" : "";
     }
 
-    function showAddLineButton() {
-      document.getElementById("buttonBox").innerHTML =
-        '<a class="btn" href="' + LINE_ADD_FRIEND_URL + '">加入官方 LINE</a>';
+    function setSubText(text) {
+      document.getElementById("subText").textContent = text || "";
     }
 
-    function jsonp(url, callbackName) {
-      const old = document.getElementById("jsonpCallbackScript");
+    function showAddLineButton() {
+      document.getElementById("buttonBox").innerHTML =
+        '<a class="btn" href="' + LINE_ADD_FRIEND_URL + '" target="_blank" rel="noopener">加入官方 LINE</a>';
+    }
+
+    function jsonp(url, scriptId) {
+      const old = document.getElementById(scriptId);
       if (old) old.remove();
 
       const script = document.createElement("script");
-      script.id = "jsonpCallbackScript";
+      script.id = scriptId;
       script.src = url;
       document.body.appendChild(script);
     }
 
-    const params = new URLSearchParams(window.location.search);
-    const code = params.get("code");
-    const state = params.get("state");
-    const error = params.get("error");
-
-    if (error) {
-      setMessage("LINE 綁定失敗", "授權未完成，請重新送出表單再試一次。", true);
-    } else if (!code || !state) {
-      setMessage("LINE 綁定失敗", "缺少 LINE 授權資料，請重新送出表單再試一次。", true);
-    } else {
+    function callLineCallback(code, state) {
       window.handleLineCallback = function (res) {
         if (!res || !res.ok) {
-          setMessage("LINE 綁定失敗", res && res.message ? res.message : "系統回寫失敗", true);
+          setMessage("資料確認失敗", res && res.message ? res.message : "系統回寫失敗", true);
+          setSubText("");
           return;
         }
 
-        setMessage("綁定完成", "您的 LINE 綁定已完成。", false);
+        setMessage("資料確認完成", "請加入官方 LINE，以利專人後續聯繫。", false);
         showAddLineButton();
+        setSubText("系統將於 10 秒後自動確認是否已加入官方 LINE。");
+
+        setTimeout(function () {
+          checkFriendStatus(res.applyId);
+        }, 10000);
       };
 
       const apiParams = new URLSearchParams();
@@ -132,7 +140,49 @@
       apiParams.set("state", state);
       apiParams.set("callback", "handleLineCallback");
 
-      jsonp(API_URL + "?" + apiParams.toString(), "handleLineCallback");
+      jsonp(API_URL + "?" + apiParams.toString(), "jsonpLineCallbackScript");
+    }
+
+    function checkFriendStatus(applyId) {
+      setSubText("正在確認官方 LINE 好友狀態...");
+
+      window.handleFriendStatus = function (res) {
+        if (!res || !res.ok) {
+          setMessage("資料確認完成", "您的資料已送出，後續將由專人協助確認。", false);
+          setSubText("");
+          return;
+        }
+
+        if (res.officialLineFriendStatus === "是") {
+          setMessage("完成", "您的資料已送出，官方 LINE 好友狀態已完成確認。", false);
+          setSubText("");
+        } else {
+          setMessage("資料已送出", "系統尚未確認您已加入官方 LINE。", false);
+          setSubText("若已加入，系統後續可再由後台更新確認。");
+        }
+      };
+
+      const apiParams = new URLSearchParams();
+      apiParams.set("action", "checkFriendStatus");
+      apiParams.set("applyId", applyId);
+      apiParams.set("callback", "handleFriendStatus");
+
+      jsonp(API_URL + "?" + apiParams.toString(), "jsonpFriendStatusScript");
+    }
+
+    const params = new URLSearchParams(window.location.search);
+    const code = params.get("code");
+    const state = params.get("state");
+    const error = params.get("error");
+
+    if (error) {
+      setMessage("資料確認失敗", "授權未完成，請重新送出表單再試一次。", true);
+      setSubText("");
+    } else if (!code || !state) {
+      setMessage("資料確認失敗", "缺少 LINE 授權資料，請重新送出表單再試一次。", true);
+      setSubText("");
+    } else {
+      callLineCallback(code, state);
     }
   </script>
 </body>
