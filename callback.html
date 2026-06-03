@@ -142,7 +142,7 @@
     }
 
     function checkFriendStatus(applyId) {
-      setSubText("正在確認官方 LINE 好友狀態...");
+      setSubText("");
 
       window.handleFriendStatus = function (res) {
         if (!res || !res.ok) {
