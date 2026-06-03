@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LINE 綁定中</title>
+
+  <style>
+    :root {
+      --bg: #F4F0E8;
+      --card: #EDE8DC;
+      --gold: #C49A30;
+      --deep-gold: #8B6B1E;
+      --black: #1A1714;
+      --white: #ffffff;
+      --error: #9b1c1c;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: var(--bg);
+      color: var(--black);
+      font-family: "Noto Sans TC", "Microsoft JhengHei", Arial, sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+
+    .card {
+      width: 100%;
+      max-width: 480px;
+      background: var(--card);
+      border-radius: 18px;
+      padding: 32px 24px;
+      text-align: center;
+      border: 1px solid rgba(139, 107, 30, 0.18);
+      box-shadow: 0 8px 24px rgba(26, 23, 20, 0.08);
+    }
+
+    h1 {
+      margin: 0 0 14px;
+      color: var(--deep-gold);
+      font-size: 24px;
+    }
+
+    p {
+      margin: 0;
+      line-height: 1.7;
+      font-size: 16px;
+    }
+
+    .btn {
+      display: inline-block;
+      margin-top: 22px;
+      background: var(--gold);
+      color: var(--white);
+      text-decoration: none;
+      padding: 14px 24px;
+      border-radius: 999px;
+      font-weight: 800;
+    }
+
+    .error {
+      color: var(--error);
+      font-weight: 700;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="card">
+    <h1 id="title">LINE 綁定中</h1>
+    <p id="message">請稍候，系統正在完成綁定...</p>
+    <div id="buttonBox"></div>
+  </div>
+
+  <script>
+    const API_URL = "https://script.google.com/macros/s/AKfycbxtMnPWrtIkJHL9Q8z7pdCx-RWg8_KVmdGtLYI8Iy1AR2ei13mE3I1jSqm6gEhnTJ7Gpg/exec";
+    const LINE_ADD_FRIEND_URL = "https://line.me/R/ti/p/@162ftert";
+
+    function setMessage(title, message, isError) {
+      document.getElementById("title").textContent = title;
+      const msg = document.getElementById("message");
+      msg.textContent = message;
+      msg.className = isError ? "error" : "";
+    }
+
+    function showAddLineButton() {
+      document.getElementById("buttonBox").innerHTML =
+        '<a class="btn" href="' + LINE_ADD_FRIEND_URL + '">加入官方 LINE</a>';
+    }
+
+    function jsonp(url, callbackName) {
+      const old = document.getElementById("jsonpCallbackScript");
+      if (old) old.remove();
+
+      const script = document.createElement("script");
+      script.id = "jsonpCallbackScript";
+      script.src = url;
+      document.body.appendChild(script);
+    }
+
+    const params = new URLSearchParams(window.location.search);
+    const code = params.get("code");
+    const state = params.get("state");
+    const error = params.get("error");
+
+    if (error) {
+      setMessage("LINE 綁定失敗", "授權未完成，請重新送出表單再試一次。", true);
+    } else if (!code || !state) {
+      setMessage("LINE 綁定失敗", "缺少 LINE 授權資料，請重新送出表單再試一次。", true);
+    } else {
+      window.handleLineCallback = function (res) {
+        if (!res || !res.ok) {
+          setMessage("LINE 綁定失敗", res && res.message ? res.message : "系統回寫失敗", true);
+          return;
+        }
+
+        setMessage("綁定完成", "您的 LINE 綁定已完成。", false);
+        showAddLineButton();
+      };
+
+      const apiParams = new URLSearchParams();
+      apiParams.set("action", "lineCallback");
+      apiParams.set("code", code);
+      apiParams.set("state", state);
+      apiParams.set("callback", "handleLineCallback");
+
+      jsonp(API_URL + "?" + apiParams.toString(), "handleLineCallback");
+    }
+  </script>
+</body>
+</html>
