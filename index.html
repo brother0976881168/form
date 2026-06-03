@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>申請表單</title>
+
+  <style>
+    :root {
+      --bg: #F4F0E8;
+      --card: #EDE8DC;
+      --gold: #C49A30;
+      --deep-gold: #8B6B1E;
+      --black: #1A1714;
+      --muted: #8f887c;
+      --white: #ffffff;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--black);
+      font-family: "Noto Sans TC", "Microsoft JhengHei", Arial, sans-serif;
+    }
+
+    .page {
+      width: 100%;
+      max-width: 720px;
+      margin: 0 auto;
+      padding-bottom: 40px;
+    }
+
+    .top-img {
+      width: 100%;
+      display: block;
+    }
+
+    .form-card {
+      margin: 18px 14px 0;
+      padding: 22px 18px;
+      background: var(--card);
+      border-radius: 18px;
+      box-shadow: 0 8px 24px rgba(26, 23, 20, 0.08);
+      border: 1px solid rgba(139, 107, 30, 0.18);
+    }
+
+    .field {
+      margin-bottom: 18px;
+    }
+
+    label {
+      display: block;
+      font-weight: 700;
+      font-size: 16px;
+      margin-bottom: 8px;
+      color: var(--black);
+    }
+
+    input[type="text"],
+    input[type="tel"],
+    input[type="number"],
+    textarea {
+      width: 100%;
+      padding: 13px 14px;
+      border: 1px solid rgba(139, 107, 30, 0.35);
+      border-radius: 12px;
+      font-size: 16px;
+      background: #fffdf8;
+      color: var(--black);
+      outline: none;
+    }
+
+    textarea {
+      min-height: 90px;
+      resize: vertical;
+    }
+
+    input:focus,
+    textarea:focus {
+      border-color: var(--gold);
+      box-shadow: 0 0 0 3px rgba(196, 154, 48, 0.18);
+    }
+
+    .hint {
+      font-size: 13px;
+      color: var(--muted);
+      margin-top: 6px;
+      line-height: 1.6;
+    }
+
+    .checkbox-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 8px;
+    }
+
+    .check-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 11px 10px;
+      background: #fffdf8;
+      border: 1px solid rgba(139, 107, 30, 0.25);
+      border-radius: 12px;
+      font-size: 15px;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .check-item input {
+      width: 18px;
+      height: 18px;
+      accent-color: var(--gold);
+    }
+
+    .submit-btn {
+      width: 100%;
+      border: none;
+      border-radius: 999px;
+      background: var(--gold);
+      color: #fff;
+      font-size: 18px;
+      font-weight: 800;
+      padding: 15px 18px;
+      cursor: pointer;
+      margin-top: 8px;
+      box-shadow: 0 8px 18px rgba(196, 154, 48, 0.28);
+    }
+
+    .submit-btn:active {
+      transform: translateY(1px);
+      background: var(--deep-gold);
+    }
+
+    .error {
+      display: none;
+      margin: 0 14px 14px;
+      padding: 12px 14px;
+      border-radius: 12px;
+      background: #fff1f1;
+      color: #9b1c1c;
+      font-weight: 700;
+      line-height: 1.6;
+    }
+
+    .loading {
+      display: none;
+      text-align: center;
+      margin-top: 14px;
+      font-size: 14px;
+      color: var(--deep-gold);
+      font-weight: 700;
+    }
+
+    @media (max-width: 420px) {
+      .checkbox-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .form-card {
+        margin: 14px 10px 0;
+        padding: 20px 14px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="page">
+    <img class="top-img" src="gold-01.png" alt="">
+    <img class="top-img" src="gold-02.png" alt="">
+    <img class="top-img" src="gold-03.png" alt="">
+    <img class="top-img" src="gold-04.png" alt="">
+    <div id="errorBox" class="error"></div>
+
+    <form
+      id="applyForm"
+      class="form-card"
+      method="GET"
+      action="https://script.google.com/macros/s/AKfycbxtMnPWrtIkJHL9Q8z7pdCx-RWg8_KVmdGtLYI8Iy1AR2ei13mE3I1jSqm6gEhnTJ7Gpg/exec"
+    >
+      <input type="hidden" name="action" value="submitAndLogin">
+      <input type="hidden" id="sourceInput" name="source" value="other">
+      <input type="hidden" name="bindType" value="form">
+
+      <div class="field">
+        <label for="name">姓名</label>
+        <input id="name" name="name" type="text" autocomplete="name" required>
+      </div>
+
+      <div class="field">
+        <label for="phone">手機</label>
+        <input id="phone" name="phone" type="tel" inputmode="numeric" autocomplete="tel" required>
+      </div>
+
+      <div class="field">
+        <label for="amount">資金需求</label>
+        <input id="amount" name="amount" type="text" inputmode="numeric" required>
+      </div>
+
+      <div class="field">
+        <label>可提供擔保品</label>
+        <div class="hint">可複選，請至少勾選一項。</div>
+
+        <div class="checkbox-grid">
+          <label class="check-item"><input type="checkbox" name="car" value="是">汽車</label>
+          <label class="check-item"><input type="checkbox" name="motorcycle" value="是">機車</label>
+          <label class="check-item"><input type="checkbox" name="house" value="是">房屋</label>
+          <label class="check-item"><input type="checkbox" name="land" value="是">土地</label>
+          <label class="check-item"><input type="checkbox" name="watch" value="是">名錶</label>
+          <label class="check-item"><input type="checkbox" name="bag" value="是">名牌包</label>
+          <label class="check-item"><input type="checkbox" name="gold" value="是">黃金</label>
+          <label class="check-item"><input type="checkbox" name="metal" value="是">其他貴金屬</label>
+          <label class="check-item"><input type="checkbox" name="machine" value="是">機械設備</label>
+          <label class="check-item"><input type="checkbox" name="farmMachine" value="是">農用機具</label>
+          <label class="check-item"><input type="checkbox" name="device3c" value="是">3C產品</label>
+          <label class="check-item"><input type="checkbox" name="appliance" value="是">家電用品</label>
+          <label class="check-item"><input type="checkbox" name="noCollateral" value="是">無擔保品</label>
+          <label class="check-item"><input type="checkbox" id="otherCollateral" name="otherCollateral" value="是">其他擔保品</label>
+        </div>
+      </div>
+
+      <div class="field" id="otherTextBox" style="display:none;">
+        <label for="otherCollateralText">其他擔保品說明</label>
+        <textarea id="otherCollateralText" name="otherCollateralText"></textarea>
+      </div>
+
+      <button id="submitBtn" class="submit-btn" type="submit">確認送出</button>
+      <div id="loadingText" class="loading">請稍候，正在送出資料並前往 LINE 綁定...</div>
+    </form>
+  </div>
+
+  <script>
+    const allowedSources = ["facebook", "instagram", "tiktok", "sms", "other"];
+
+    function getSource() {
+      const params = new URLSearchParams(window.location.search);
+      const source = (params.get("source") || "other").toLowerCase().trim();
+      return allowedSources.includes(source) ? source : "other";
+    }
+
+    function showError(message) {
+      const box = document.getElementById("errorBox");
+      box.textContent = message;
+      box.style.display = "block";
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    function clearError() {
+      const box = document.getElementById("errorBox");
+      box.textContent = "";
+      box.style.display = "none";
+    }
+
+    document.getElementById("sourceInput").value = getSource();
+
+    const otherCheckbox = document.getElementById("otherCollateral");
+    const otherTextBox = document.getElementById("otherTextBox");
+    const otherText = document.getElementById("otherCollateralText");
+
+    otherCheckbox.addEventListener("change", function () {
+      otherTextBox.style.display = this.checked ? "block" : "none";
+      if (!this.checked) {
+        otherText.value = "";
+      }
+    });
+
+    document.getElementById("applyForm").addEventListener("submit", function (e) {
+      clearError();
+
+      const name = document.getElementById("name").value.trim();
+      const phone = document.getElementById("phone").value.trim();
+      const amount = document.getElementById("amount").value.trim();
+
+      if (!name) {
+        e.preventDefault();
+        showError("請填寫姓名");
+        return;
+      }
+
+      if (!phone) {
+        e.preventDefault();
+        showError("請填寫手機");
+        return;
+      }
+
+      if (!/^09\d{8}$/.test(phone)) {
+        e.preventDefault();
+        showError("手機格式錯誤，請輸入 09 開頭共 10 碼手機號碼");
+        return;
+      }
+
+      if (!amount) {
+        e.preventDefault();
+        showError("請填寫資金需求");
+        return;
+      }
+
+      const checkedCollateral = document.querySelectorAll('.checkbox-grid input[type="checkbox"]:checked');
+
+      if (checkedCollateral.length === 0) {
+        e.preventDefault();
+        showError("請至少勾選一項擔保品");
+        return;
+      }
+
+      if (otherCheckbox.checked && !otherText.value.trim()) {
+        e.preventDefault();
+        showError("請填寫其他擔保品說明");
+        return;
+      }
+
+      document.getElementById("submitBtn").disabled = true;
+      document.getElementById("submitBtn").textContent = "送出中...";
+      document.getElementById("loadingText").style.display = "block";
+    });
+  </script>
+</body>
+</html>
+```
