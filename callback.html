@@ -129,10 +129,7 @@
         setMessage("資料確認完成", "請加入官方 LINE \n 以利專人後續聯繫。", false);
         showAddLineButton();
         setSubText("");
-
-        setTimeout(function () {
           checkFriendStatus(res.applyId);
-        }, 60000);
       };
 
       const apiParams = new URLSearchParams();
