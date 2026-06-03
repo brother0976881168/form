@@ -198,10 +198,17 @@
         <input id="phone" name="phone" type="tel" inputmode="numeric" autocomplete="tel" required>
       </div>
 
-      <div class="field">
-        <label for="amount">資金需求</label>
-        <input id="amount" name="amount" type="text" inputmode="numeric" required>
-      </div>
+<div class="field">
+  <label>資金需求</label>
+  <div class="checkbox-grid">
+    <label class="check-item"><input type="radio" name="amount" value="10萬以下" required>10萬以下</label>
+    <label class="check-item"><input type="radio" name="amount" value="10萬～30萬">10萬～30萬</label>
+    <label class="check-item"><input type="radio" name="amount" value="30萬～50萬">30萬～50萬</label>
+    <label class="check-item"><input type="radio" name="amount" value="50萬～100萬">50萬～100萬</label>
+    <label class="check-item"><input type="radio" name="amount" value="100萬～300萬">100萬～300萬</label>
+    <label class="check-item"><input type="radio" name="amount" value="300萬以上">300萬以上</label>
+  </div>
+</div>
 
       <div class="field">
         <label>可提供擔保品</label>
@@ -275,7 +282,8 @@
 
       const name = document.getElementById("name").value.trim();
       const phone = document.getElementById("phone").value.trim();
-      const amount = document.getElementById("amount").value.trim();
+      const amountChecked = document.querySelector('input[name="amount"]:checked');
+      const amount = amountChecked ? amountChecked.value : "";
 
       if (!name) {
         e.preventDefault();
