@@ -178,12 +178,8 @@
     <img class="top-img" src="gold-04.png" alt="">
     <div id="errorBox" class="error"></div>
 
-    <form
-      id="applyForm"
-      class="form-card"
-      method="GET"
-      action="https://script.google.com/macros/s/AKfycbxtMnPWrtIkJHL9Q8z7pdCx-RWg8_KVmdGtLYI8Iy1AR2ei13mE3I1jSqm6gEhnTJ7Gpg/exec"
-    >
+   <form id="applyForm" class="form-card">
+     
       <input type="hidden" name="action" value="submitAndLogin">
       <input type="hidden" id="sourceInput" name="source" value="other">
       <input type="hidden" name="bindType" value="form">
@@ -278,6 +274,9 @@
     });
 
     document.getElementById("applyForm").addEventListener("submit", function (e) {
+
+   e.preventDefault();
+      
       clearError();
 
       const name = document.getElementById("name").value.trim();
@@ -326,6 +325,41 @@
       document.getElementById("submitBtn").disabled = true;
       document.getElementById("submitBtn").textContent = "送出中...";
       document.getElementById("loadingText").style.display = "block";
+
+      const apiUrl = "https://script.google.com/macros/s/AKfycbxtMnPWrtIkJHL9Q8z7pdCx-RWg8_KVmdGtLYI8Iy1AR2ei13mE3I1jSqm6gEhnTJ7Gpg/exec";
+
+const form = document.getElementById("applyForm");
+const formData = new FormData(form);
+const params = new URLSearchParams();
+
+for (const [key, value] of formData.entries()) {
+  params.append(key, value);
+}
+
+params.set("action", "submitAndLogin");
+params.set("callback", "handleSubmitResult");
+
+window.handleSubmitResult = function (res) {
+  if (!res || !res.ok) {
+    showError(res && res.message ? res.message : "送出失敗");
+    document.getElementById("submitBtn").disabled = false;
+    document.getElementById("submitBtn").textContent = "確認送出";
+    document.getElementById("loadingText").style.display = "none";
+    return;
+  }
+
+  if (res.loginUrl) {
+    location.href = res.loginUrl;
+    return;
+  }
+
+  showError("未取得 LINE 授權網址");
+};
+
+const script = document.createElement("script");
+script.src = apiUrl + "?" + params.toString();
+document.body.appendChild(script);
+      
     });
   </script>
 </body>
