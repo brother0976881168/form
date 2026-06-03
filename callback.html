@@ -53,6 +53,7 @@
       margin: 0;
       line-height: 1.7;
       font-size: 16px;
+      white-space: pre-line;
     }
 
     .btn {
@@ -125,13 +126,13 @@
           return;
         }
 
-        setMessage("資料確認完成", "請加入官方 LINE，以利專人後續聯繫。", false);
+        setMessage("資料確認完成", "請加入官方 LINE \n 以利專人後續聯繫。", false);
         showAddLineButton();
-        setSubText("系統將於 10 秒後自動確認是否已加入官方 LINE。");
+        setSubText("");
 
         setTimeout(function () {
           checkFriendStatus(res.applyId);
-        }, 10000);
+        }, 60000);
       };
 
       const apiParams = new URLSearchParams();
