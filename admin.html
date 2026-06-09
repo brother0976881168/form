@@ -428,7 +428,7 @@
         <div class="filter-grid">
           <div>
             <label for="keywordFilter">關鍵字搜尋</label>
-            <input id="keywordFilter" type="text" placeholder="姓名、手機、LINE顯示名稱" oninput="applyFilters()" />
+            <input id="keywordFilter" type="text" placeholder="手機、LINE顯示名稱" oninput="applyFilters()" />
           </div>
 
           <div>
@@ -519,7 +519,7 @@
               <tr>
                 <th>填表時間</th>
                 <th>來源平台</th>
-                <th>姓名</th>
+                <th>裝置</th>
                 <th>手機</th>
                 <th>資金需求</th>
                 <th>擔保品</th>
@@ -667,7 +667,7 @@
 
       normalized._collateralText = getCollateralText(row);
       normalized._searchText = [
-        row["姓名"] || "",
+        row["裝置"] || "",
         row["手機"] || "",
         row["LINE顯示名稱"] || ""
       ].join(" ").toLowerCase();
