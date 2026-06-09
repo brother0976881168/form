@@ -210,6 +210,7 @@
      
       <input type="hidden" name="action" value="submitAndLogin">
       <input type="hidden" id="sourceInput" name="source" value="other">
+     <input type="hidden" id="deviceInput" name="deviceType" value="">
       <input type="hidden" name="bindType" value="form">
 
       <div class="field">
@@ -299,6 +300,26 @@
     }
 
     document.getElementById("sourceInput").value = getSource();
+
+    function getDeviceType() {
+  const ua = navigator.userAgent || "";
+
+  if (/iPad|Tablet|PlayBook|Silk/i.test(ua)) {
+    return "平板";
+  }
+
+  if (/Android/i.test(ua) && !/Mobile/i.test(ua)) {
+    return "平板";
+  }
+
+  if (/Mobi|Android|iPhone|iPod/i.test(ua)) {
+    return "手機";
+  }
+
+  return "電腦";
+}
+
+document.getElementById("deviceInput").value = getDeviceType();
 
     const otherCheckbox = document.getElementById("otherCollateral");
     const otherTextBox = document.getElementById("otherTextBox");
