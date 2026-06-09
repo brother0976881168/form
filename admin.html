@@ -433,14 +433,23 @@
 
           <div>
             <label for="sourceFilter">來源平台</label>
-            <select id="sourceFilter" onchange="applyFilters()">
-              <option value="">全部</option>
-              <option value="Facebook">Facebook</option>
-              <option value="Instagram">Instagram</option>
-              <option value="TikTok">TikTok</option>
-              <option value="簡訊">簡訊</option>
-              <option value="其他">其他</option>
-            </select>
+<select id="sourceFilter" onchange="applyFilters()">
+  <option value="">全部</option>
+  <option value="Facebook-1">Facebook-1</option>
+  <option value="Facebook-2">Facebook-2</option>
+  <option value="Facebook-3">Facebook-3</option>
+  <option value="Facebook-4">Facebook-4</option>
+  <option value="Instagram-1">Instagram-1</option>
+  <option value="Instagram-2">Instagram-2</option>
+  <option value="Instagram-3">Instagram-3</option>
+  <option value="Instagram-4">Instagram-4</option>
+  <option value="TikTok-1">TikTok-1</option>
+  <option value="TikTok-2">TikTok-2</option>
+  <option value="TikTok-3">TikTok-3</option>
+  <option value="TikTok-4">TikTok-4</option>
+  <option value="簡訊">簡訊</option>
+  <option value="其他">其他</option>
+</select>
           </div>
 
           <div>
@@ -563,7 +572,24 @@
       "其他擔保品"
     ];
 
-    const SOURCE_LIST = ["Facebook", "Instagram", "TikTok", "簡訊", "其他"];
+   const SOURCE_LIST = [
+  "Facebook-1",
+  "Facebook-2",
+  "Facebook-3",
+  "Facebook-4",
+  "Instagram-1",
+  "Instagram-2",
+  "Instagram-3",
+  "Instagram-4",
+  "TikTok-1",
+  "TikTok-2",
+  "TikTok-3",
+  "TikTok-4",
+  "簡訊",
+  "其他"
+];
+
+    
     const STATUS_LIST = ["未聯絡", "已聯絡", "未回覆", "失聯", "黑名單", "結案"];
 
     let allRows = [];
