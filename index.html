@@ -20,6 +20,10 @@
       box-sizing: border-box;
     }
 
+    html {
+      scroll-behavior: smooth;
+    }
+
     body {
       margin: 0;
       background: var(--bg);
@@ -137,6 +141,23 @@
       background: var(--deep-gold);
     }
 
+    .float-consult-btn {
+      position: fixed;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 9999;
+      display: block;
+      width: 86px;
+      height: auto;
+    }
+
+    .float-consult-btn img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
     .error {
       display: none;
       margin: 0 14px 14px;
@@ -166,11 +187,20 @@
         margin: 14px 10px 0;
         padding: 20px 14px;
       }
+
+      .float-consult-btn {
+        right: 6px;
+        width: 72px;
+      }
     }
   </style>
 </head>
 
 <body>
+  <a class="float-consult-btn" href="#applyForm" aria-label="立即咨詢">
+    <img src="askmenow.png" alt="立即咨詢">
+  </a>
+
   <div class="page">
     <img class="top-img" src="gold-01.png" alt="">
     <img class="top-img" src="gold-02.png" alt="">
@@ -183,11 +213,6 @@
       <input type="hidden" name="action" value="submitAndLogin">
       <input type="hidden" id="sourceInput" name="source" value="other">
       <input type="hidden" name="bindType" value="form">
-
-      <div class="field">
-        <label for="name">姓名</label>
-        <input id="name" name="name" type="text" autocomplete="name" required>
-      </div>
 
       <div class="field">
         <label for="phone">手機</label>
@@ -279,16 +304,9 @@
       
       clearError();
 
-      const name = document.getElementById("name").value.trim();
       const phone = document.getElementById("phone").value.trim();
       const amountChecked = document.querySelector('input[name="amount"]:checked');
       const amount = amountChecked ? amountChecked.value : "";
-
-      if (!name) {
-        e.preventDefault();
-        showError("請填寫姓名");
-        return;
-      }
 
       if (!phone) {
         e.preventDefault();
