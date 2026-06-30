@@ -43,6 +43,14 @@
       display: block;
     }
 
+.form-bg-section {
+  background-image: url("P2.png");
+  background-repeat: no-repeat;
+  background-position: center top;
+  background-size: cover;
+  padding: 26px 0 30px;
+}
+
     .form-card {
       margin: 18px 14px 0;
       padding: 22px 18px;
@@ -141,6 +149,31 @@
       background: var(--deep-gold);
     }
 
+   .submit-img-btn {
+  width: 100%;
+  border: none;
+  background: transparent;
+  padding: 0;
+  margin-top: 8px;
+  cursor: pointer;
+  display: block;
+}
+
+.submit-img-btn img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.submit-img-btn:active {
+  transform: translateY(1px);
+}
+
+.submit-img-btn.is-loading {
+  opacity: 0.6;
+  pointer-events: none;
+} 
+
     .float-consult-btn {
       position: fixed;
       right: 10px;
@@ -201,16 +234,13 @@
     <img src="askmenow.png" alt="立即咨詢">
   </a>
 
-  <div class="page">
-    <img class="top-img" src="p1.jpg" alt="">
-    <img class="top-img" src="P2.png" alt="">
-    <img class="top-img" src="p3.png" alt="">
-    <img class="top-img" src="p4.png" alt="">
-    <img class="top-img" src="p5.png" alt="">
-    <img class="top-img" src="p6.png" alt="">
+<div class="page">
+  <img class="top-img" src="p1.jpg" alt="">
+
+  <section class="form-bg-section">
     <div id="errorBox" class="error"></div>
 
-   <form id="applyForm" class="form-card">
+    <form id="applyForm" class="form-card">
      
       <input type="hidden" name="action" value="submitAndLogin">
       <input type="hidden" id="sourceInput" name="source" value="other">
@@ -261,10 +291,19 @@
         <textarea id="otherCollateralText" name="otherCollateralText"></textarea>
       </div>
 
-      <button id="submitBtn" class="submit-btn" type="submit">立即送出快速咨詢</button>
+<button id="submitBtn" class="submit-img-btn" type="submit" aria-label="立即送出快速咨詢">
+  <img src="p1-btn.png" alt="立即送出快速咨詢">
+</button>
+      
       <div id="loadingText" class="loading">請稍候，正在送出資料...</div>
     </form>
-  </div>
+  </section>
+
+  <img class="top-img" src="p3.png" alt="">
+  <img class="top-img" src="p4.png" alt="">
+  <img class="top-img" src="p5.png" alt="">
+  <img class="top-img" src="p6.png" alt="">
+</div>
 
   <script>
     const allowedSources = [
@@ -378,9 +417,9 @@ document.getElementById("deviceInput").value = getDeviceType();
         return;
       }
 
-      document.getElementById("submitBtn").disabled = true;
-      document.getElementById("submitBtn").textContent = "送出中...";
-      document.getElementById("loadingText").style.display = "block";
+document.getElementById("submitBtn").disabled = true;
+document.getElementById("submitBtn").classList.add("is-loading");
+document.getElementById("loadingText").style.display = "block";
 
       const apiUrl = "https://script.google.com/macros/s/AKfycbxtMnPWrtIkJHL9Q8z7pdCx-RWg8_KVmdGtLYI8Iy1AR2ei13mE3I1jSqm6gEhnTJ7Gpg/exec";
 
@@ -398,9 +437,9 @@ params.set("callback", "handleSubmitResult");
 window.handleSubmitResult = function (res) {
   if (!res || !res.ok) {
     showError(res && res.message ? res.message : "送出失敗");
-    document.getElementById("submitBtn").disabled = false;
-    document.getElementById("submitBtn").textContent = "確認送出";
-    document.getElementById("loadingText").style.display = "none";
+document.getElementById("submitBtn").disabled = false;
+document.getElementById("submitBtn").classList.remove("is-loading");
+document.getElementById("loadingText").style.display = "none";
     return;
   }
 
