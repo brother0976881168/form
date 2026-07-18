@@ -237,6 +237,55 @@
       font-weight: 700;
     }
 
+    .p6-carousel-section {
+  position: relative;
+  width: 100%;
+}
+
+.p6-carousel-bg {
+  width: 100%;
+  display: block;
+}
+
+.p6-carousel-window {
+  position: absolute;
+  left: 8%;
+  right: 8%;
+  top: 58%;
+  overflow: hidden;
+}
+
+.p6-carousel-track {
+  display: flex;
+  gap: 12px;
+  width: max-content;
+  animation: p6CarouselMove 10s linear infinite;
+}
+
+.p6-carousel-item {
+  width: 160px;
+  flex: 0 0 auto;
+  border-radius: 14px;
+  overflow: hidden;
+  background: #fff;
+}
+
+.p6-carousel-item img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+@keyframes p6CarouselMove {
+  0% {
+    transform: translateX(0);
+  }
+
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
     @media (max-width: 420px) {
       .checkbox-grid {
         grid-template-columns: 1fr;
@@ -342,7 +391,34 @@
   <img class="top-img" src="p3.png" alt="">
   <img class="top-img" src="p4.png" alt="">
   <img class="top-img" src="p5.png" alt="">
-  <img class="top-img" src="p6.png" alt="">
+  <img class="top-img" src="p3.png" alt="">
+<img class="top-img" src="p4.png" alt="">
+<img class="top-img" src="p5.png" alt="">
+
+<section class="p6-carousel-section">
+  <img class="p6-carousel-bg" src="p6.png" alt="">
+
+  <div class="p6-carousel-window">
+    <div class="p6-carousel-track">
+      <div class="p6-carousel-item"><img src="slide1.png" alt=""></div>
+      <div class="p6-carousel-item"><img src="slide2.png" alt=""></div>
+      <div class="p6-carousel-item"><img src="slide3.png" alt=""></div>
+      <div class="p6-carousel-item"><img src="slide4.png" alt=""></div>
+      <div class="p6-carousel-item"><img src="slide5.png" alt=""></div>
+      <div class="p6-carousel-item"><img src="slide6.png" alt=""></div>
+
+      <div class="p6-carousel-item"><img src="slide1.png" alt=""></div>
+      <div class="p6-carousel-item"><img src="slide2.png" alt=""></div>
+      <div class="p6-carousel-item"><img src="slide3.png" alt=""></div>
+      <div class="p6-carousel-item"><img src="slide4.png" alt=""></div>
+      <div class="p6-carousel-item"><img src="slide5.png" alt=""></div>
+      <div class="p6-carousel-item"><img src="slide6.png" alt=""></div>
+    </div>
+  </div>
+</section>
+  
+</div>
+  
 </div>
 
   <script>
