@@ -43,6 +43,36 @@
       display: block;
     }
 
+  .case-section {
+  position: relative;
+  width: 100%;
+}
+
+.case-card-btn {
+  position: absolute;
+  left: 37.5%;
+  width: 25%;
+  border: none;
+  background: transparent;
+  padding: 0;
+  cursor: pointer;
+  z-index: 8;
+}
+
+.case-card-btn img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.case-card-btn-1 {
+  top: 47.5%;
+}
+
+.case-card-btn-2 {
+  top: 86.5%;
+}
+
 .hero-section {
   position: relative;
   width: 100%;
@@ -377,6 +407,19 @@
   .p6-carousel-track {
     gap: 8px;
   }
+
+.case-card-btn {
+  left: 36%;
+  width: 28%;
+}
+
+.case-card-btn-1 {
+  top: 47.5%;
+}
+
+.case-card-btn-2 {
+  top: 86.5%;
+}
       
     }
   </style>
@@ -460,10 +503,18 @@
 
   <img class="top-img" src="p3.png" alt="">
   <img class="top-img" src="p4.png" alt="">
+
+  <section class="case-section">
   <img class="top-img" src="p5.png" alt="">
-  <img class="top-img" src="p3.png" alt="">
-<img class="top-img" src="p4.png" alt="">
-<img class="top-img" src="p5.png" alt="">
+
+  <button class="case-card-btn case-card-btn-1" type="button" data-img="card1.jpg" aria-label="查看案例一感謝信原稿">
+    <img src="card-button.jpg" alt="查看感謝信原稿">
+  </button>
+
+  <button class="case-card-btn case-card-btn-2" type="button" data-img="card2.jpg" aria-label="查看案例二感謝信原稿">
+    <img src="card-button.jpg" alt="查看感謝信原稿">
+  </button>
+</section>
 
 <section class="p6-carousel-section">
   <img class="p6-carousel-bg" src="p6.png" alt="">
@@ -558,6 +609,13 @@ document.getElementById("deviceInput").value = getDeviceType();
     const imageModal = document.getElementById("imageModal");
 const imageModalImg = document.getElementById("imageModalImg");
 const imageModalClose = document.getElementById("imageModalClose");
+
+document.querySelectorAll(".case-card-btn").forEach(function (btn) {
+  btn.addEventListener("click", function () {
+    imageModalImg.src = this.getAttribute("data-img");
+    imageModal.classList.add("is-open");
+  });
+});
 
 document.querySelectorAll(".p6-carousel-item img").forEach(function (img) {
   img.addEventListener("click", function () {
