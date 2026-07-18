@@ -43,6 +43,50 @@
       display: block;
     }
 
+  .p3-section {
+  position: relative;
+  width: 100%;
+}
+
+.p3-case-btn {
+  position: absolute;
+  border: none;
+  background: transparent;
+  padding: 0;
+  cursor: pointer;
+  z-index: 8;
+}
+
+.p3-case-btn img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.p3-case-btn-1 {
+  left: 18%;
+  top: 35.5%;
+  width: 29%;
+}
+
+.p3-case-btn-2 {
+  left: 53%;
+  top: 35.5%;
+  width: 29%;
+}
+
+.p3-case-btn-3 {
+  left: 18%;
+  top: 67.5%;
+  width: 29%;
+}
+
+.p3-case-btn-4 {
+  left: 53%;
+  top: 67.5%;
+  width: 29%;
+}
+
   .case-section {
   position: relative;
   width: 100%;
@@ -368,7 +412,7 @@
   }
 }
 
-    @media (max-width: 420px) {
+@media (max-width: 420px) {
       .checkbox-grid {
         grid-template-columns: 1fr;
       }
@@ -420,7 +464,31 @@
 .case-card-btn-2 {
   top: 79%;
 }
-      
+
+.p3-case-btn-1 {
+  left: 18%;
+  top: 35.5%;
+  width: 29%;
+}
+
+.p3-case-btn-2 {
+  left: 53%;
+  top: 35.5%;
+  width: 29%;
+}
+
+.p3-case-btn-3 {
+  left: 18%;
+  top: 67.5%;
+  width: 29%;
+}
+
+.p3-case-btn-4 {
+  left: 53%;
+  top: 67.5%;
+  width: 29%;
+}
+  
     }
   </style>
 </head>
@@ -501,7 +569,26 @@
     </form>
   </section>
 
+  <section class="p3-section">
   <img class="top-img" src="p3.png" alt="">
+
+  <button class="p3-case-btn p3-case-btn-1" type="button" data-img="case1.jpg" aria-label="開啟汽機車方案">
+    <img src="p3-1.png" alt="">
+  </button>
+
+  <button class="p3-case-btn p3-case-btn-2" type="button" data-img="case2.jpg" aria-label="開啟黃金精品方案">
+    <img src="p3-2.png" alt="">
+  </button>
+
+  <button class="p3-case-btn p3-case-btn-3" type="button" data-img="case3.jpg" aria-label="開啟房屋土地方案">
+    <img src="p3-3.png" alt="">
+  </button>
+
+  <button class="p3-case-btn p3-case-btn-4" type="button" data-img="case4.jpg" aria-label="開啟債務整合方案">
+    <img src="p3-4.png" alt="">
+  </button>
+</section>
+  
   <img class="top-img" src="p4.png" alt="">
 
   <section class="case-section">
@@ -609,6 +696,13 @@ document.getElementById("deviceInput").value = getDeviceType();
     const imageModal = document.getElementById("imageModal");
 const imageModalImg = document.getElementById("imageModalImg");
 const imageModalClose = document.getElementById("imageModalClose");
+
+document.querySelectorAll(".p3-case-btn").forEach(function (btn) {
+  btn.addEventListener("click", function () {
+    imageModalImg.src = this.getAttribute("data-img");
+    imageModal.classList.add("is-open");
+  });
+});
 
 document.querySelectorAll(".case-card-btn").forEach(function (btn) {
   btn.addEventListener("click", function () {
