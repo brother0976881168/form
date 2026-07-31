@@ -145,12 +145,12 @@ function callLineCallback(code, state) {
     }
 
 if (isBindMode) {
-  setMessage("已完成綁定", "系統已透過官方 LINE 發送確認訊息。", false);
+  setMessage("您已完成綁定", false);
   setSubText("系統即將返回官方 LINE。");
 
   setTimeout(function () {
     window.location.replace(LINE_ADD_FRIEND_URL);
-  }, 800);
+  }, 1000);
 
   return;
 }
