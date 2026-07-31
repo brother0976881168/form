@@ -254,29 +254,44 @@
       window.handleStartBindByPhone = function (res) {
         setLoading(false);
 
-        if (!res || !res.ok) {
-          const message = res && res.message ? res.message : "查詢失敗，請稍後再試。";
+if (!res || !res.ok) {
+  if (res && res.reason === "not_found") {
+    showMessage("查無申請資料，系統即將前往申請表單。", false);
 
-          showMessage(message, true);
+    setTimeout(function () {
+      location.href = res.formUrl || DEFAULT_FORM_URL;
+    }, 500);
 
-          if (res && res.reason === "not_found") {
-            showFormLink(res.formUrl || DEFAULT_FORM_URL);
-          }
+    return;
+  }
 
-          return;
-        }
+  const message = res && res.message ? res.message : "查詢失敗，請稍後再試。";
+  showMessage(message, true);
 
-        if (res.loginUrl) {
-          showMessage("已找到您的申請資料，系統即將前往 LINE 授權頁面。", false);
+  return;
+}
 
-          setTimeout(function () {
-            location.href = res.loginUrl;
-          }, 500);
+if (res.reason === "already_bound_close") {
+  showMessage("您已完成綁定，系統已透過官方 LINE 發送確認訊息。", false);
 
-          return;
-        }
+  setTimeout(function () {
+    window.close();
+  }, 800);
 
-        showMessage("已找到資料，但未取得 LINE 授權網址，請稍後再試。", true);
+  return;
+}
+
+if (res.loginUrl) {
+  showMessage("已找到您的申請資料，系統即將前往 LINE 授權頁面。", false);
+
+  setTimeout(function () {
+    location.href = res.loginUrl;
+  }, 500);
+
+  return;
+}
+
+showMessage("已找到資料，但未取得 LINE 授權網址，請稍後再試。", true);
       };
 
       const params = new URLSearchParams();
