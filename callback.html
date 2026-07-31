@@ -118,120 +118,78 @@
       document.body.appendChild(script);
     }
 
-function decodeState(state) {
-  try {
-    let base64 = state.replace(/-/g, "+").replace(/_/g, "/");
+    function decodeState(state) {
+      try {
+        let base64 = state.replace(/-/g, "+").replace(/_/g, "/");
 
-    while (base64.length % 4) {
-      base64 += "=";
+        while (base64.length % 4) {
+          base64 += "=";
+        }
+
+        const jsonText = decodeURIComponent(
+          Array.prototype.map.call(atob(base64), function (c) {
+            return "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2);
+          }).join("")
+        );
+
+        return JSON.parse(jsonText);
+      } catch (err) {
+        return {};
+      }
     }
 
-    const jsonText = decodeURIComponent(
-      Array.prototype.map.call(atob(base64), function (c) {
-        return "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2);
-      }).join("")
-    );
+    function callLineCallback(code, state) {
+      const stateObj = decodeState(state);
+      const isBindMode = stateObj.mode === "bind";
 
-    return JSON.parse(jsonText);
-  } catch (err) {
-    return {};
-  }
-}
-
-function callLineCallback(code, state) {
-  const stateObj = decodeState(state);
-  const isBindMode = stateObj.mode === "bind";
-
-  window.handleLineCallback = function (res) {
-    if (!res || !res.ok) {
-      setMessage("資料確認失敗", res && res.message ? res.message : "系統回寫失敗", true);
-      setSubText("");
-      return;
-    }
-
-    if (isBindMode) {
-      setMessage("您已完成綁定", "系統即將返回官方 LINE。", false);
-      setSubText("");
-
-      setTimeout(function () {
-        window.location.replace(LINE_ADD_FRIEND_URL);
-      }, 1000);
-
-      return;
-    }
-
-    checkFriendStatus(res.applyId);
-  };
-
-  const apiParams = new URLSearchParams();
-  apiParams.set("action", "lineCallback");
-  apiParams.set("code", code);
-  apiParams.set("state", state);
-  apiParams.set("callback", "handleLineCallback");
-
-  jsonp(API_URL + "?" + apiParams.toString(), "jsonpLineCallbackScript");
-}
-
-function checkFriendStatus(applyId) {
-  setSubText("系統正在確認官方 LINE 好友狀態，請稍候...");
-
-  window.handleFriendStatus = function (res) {
-    if (!res || !res.ok) {
-      setMessage("資料確認完成", "您的資料已送出，後續將由專人協助確認。", false);
-      setSubText("系統即將返回官方 LINE。");
-
-      setTimeout(function () {
-        window.location.replace(LINE_ADD_FRIEND_URL);
-      }, 800);
-
-      return;
-    }
-
-    if (res.officialLineFriendStatus === "是") {
-      setMessage("完成", "您的資料已送出，官方 LINE 好友狀態已完成確認。", false);
-      setSubText("系統即將返回官方 LINE。");
-    } else {
-      setMessage("資料已送出", "系統尚未確認您已加入官方 LINE。", false);
-      setSubText("系統即將返回官方LINE");
-    }
-
-    checkFriendStatus(res.applyId);
-
-    setTimeout(function () {
-      window.location.replace(LINE_ADD_FRIEND_URL);
-    }, 800);
-  };
-
-  const apiParams = new URLSearchParams();
-  apiParams.set("action", "checkFriendStatus");
-  apiParams.set("applyId", applyId);
-  apiParams.set("callback", "handleFriendStatus");
-
-  jsonp(API_URL + "?" + apiParams.toString(), "jsonpFriendStatusScript");
-}
-
-    function checkFriendStatus(applyId) {
-      setSubText("");
-
-      window.handleFriendStatus = function (res) {
+      window.handleLineCallback = function (res) {
         if (!res || !res.ok) {
-          setMessage("資料確認完成", "您的資料已送出，後續將由專人協助確認。", false);
+          setMessage("資料確認失敗", res && res.message ? res.message : "系統回寫失敗", true);
           setSubText("");
           return;
         }
 
-        if (res.officialLineFriendStatus === "是") {
-          setMessage("完成", "您的資料已送出，官方 LINE 好友狀態已完成確認。", false);
+        if (isBindMode) {
+          setMessage("您已完成綁定", "系統即將返回官方 LINE。", false);
           setSubText("");
-        } else {
-          setMessage("資料已送出", "系統尚未確認您已加入官方 LINE。", false);
-          setSubText("若已加入，系統後續可再由後台更新確認。");
+
+          checkFriendStatus(res.applyId);
+
+          setTimeout(function () {
+            window.location.replace(LINE_ADD_FRIEND_URL);
+          }, 1000);
+
+          return;
         }
 
-            setTimeout(function () {
-      window.location.replace(LINE_ADD_FRIEND_URL);
-    }, 500);
-     
+        setMessage("資料確認完成", "您的資料已送出，系統即將返回官方 LINE。", false);
+        setSubText("");
+
+        checkFriendStatus(res.applyId);
+
+        setTimeout(function () {
+          window.location.replace(LINE_ADD_FRIEND_URL);
+        }, 1000);
+      };
+
+      const apiParams = new URLSearchParams();
+      apiParams.set("action", "lineCallback");
+      apiParams.set("code", code);
+      apiParams.set("state", state);
+      apiParams.set("callback", "handleLineCallback");
+
+      jsonp(API_URL + "?" + apiParams.toString(), "jsonpLineCallbackScript");
+    }
+
+    function checkFriendStatus(applyId) {
+      if (!applyId) return;
+
+      window.handleFriendStatus = function (res) {
+        if (!res || !res.ok) {
+          return;
+        }
+
+        return;
       };
 
       const apiParams = new URLSearchParams();
