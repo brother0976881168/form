@@ -118,28 +118,58 @@
       document.body.appendChild(script);
     }
 
-    function callLineCallback(code, state) {
-      window.handleLineCallback = function (res) {
-        if (!res || !res.ok) {
-          setMessage("資料確認失敗", res && res.message ? res.message : "系統回寫失敗", true);
-          setSubText("");
-          return;
-        }
+    function decodeState(state) {
+  try {
+    const base64 = state.replace(/-/g, "+").replace(/_/g, "/");
+    const jsonText = decodeURIComponent(
+      Array.prototype.map.call(atob(base64), function (c) {
+        return "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2);
+      }).join("")
+    );
 
-checkFriendStatus(res.applyId);
+    return JSON.parse(jsonText);
+  } catch (err) {
+    return {};
+  }
+}
 
-setTimeout(function () {
-  window.location.replace(LINE_ADD_FRIEND_URL);
-}, 500);
-};
-      const apiParams = new URLSearchParams();
-      apiParams.set("action", "lineCallback");
-      apiParams.set("code", code);
-      apiParams.set("state", state);
-      apiParams.set("callback", "handleLineCallback");
+function callLineCallback(code, state) {
+  const stateObj = decodeState(state);
+  const isBindMode = stateObj.mode === "bind";
 
-      jsonp(API_URL + "?" + apiParams.toString(), "jsonpLineCallbackScript");
+  window.handleLineCallback = function (res) {
+    if (!res || !res.ok) {
+      setMessage("資料確認失敗", res && res.message ? res.message : "系統回寫失敗", true);
+      setSubText("");
+      return;
     }
+
+    if (isBindMode) {
+      setMessage("已完成綁定", "系統已透過官方 LINE 發送確認訊息。", false);
+      setSubText("此頁面即將關閉。");
+
+      setTimeout(function () {
+        window.close();
+      }, 800);
+
+      return;
+    }
+
+    checkFriendStatus(res.applyId);
+
+    setTimeout(function () {
+      window.location.replace(LINE_ADD_FRIEND_URL);
+    }, 500);
+  };
+
+  const apiParams = new URLSearchParams();
+  apiParams.set("action", "lineCallback");
+  apiParams.set("code", code);
+  apiParams.set("state", state);
+  apiParams.set("callback", "handleLineCallback");
+
+  jsonp(API_URL + "?" + apiParams.toString(), "jsonpLineCallbackScript");
+}
 
     function checkFriendStatus(applyId) {
       setSubText("");
