@@ -275,7 +275,7 @@ if (res.reason === "already_bound_close") {
   showMessage("您已完成綁定，系統已透過官方 LINE 發送確認訊息。", false);
 
   setTimeout(function () {
-    window.close();
+    window.location.replace(LINE_ADD_FRIEND_URL);
   }, 800);
 
   return;
