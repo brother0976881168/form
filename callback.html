@@ -192,8 +192,10 @@ function checkFriendStatus(applyId) {
       setSubText("系統即將返回官方 LINE。");
     } else {
       setMessage("資料已送出", "系統尚未確認您已加入官方 LINE。", false);
-      setSubText("系統即將返回官方 LINE。若已加入，系統後續可再由後台更新確認。");
+      setSubText("系統即將返回官方LINE");
     }
+
+    checkFriendStatus(res.applyId);
 
     setTimeout(function () {
       window.location.replace(LINE_ADD_FRIEND_URL);
