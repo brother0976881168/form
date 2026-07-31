@@ -144,16 +144,16 @@ function callLineCallback(code, state) {
       return;
     }
 
-    if (isBindMode) {
-      setMessage("已完成綁定", "系統已透過官方 LINE 發送確認訊息。", false);
-      setSubText("此頁面即將關閉。");
+if (isBindMode) {
+  setMessage("已完成綁定", "系統已透過官方 LINE 發送確認訊息。", false);
+  setSubText("系統即將返回官方 LINE。");
 
-      setTimeout(function () {
-        window.close();
-      }, 800);
+  setTimeout(function () {
+    window.location.replace(LINE_ADD_FRIEND_URL);
+  }, 800);
 
-      return;
-    }
+  return;
+}
 
     checkFriendStatus(res.applyId);
 
