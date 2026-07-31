@@ -157,11 +157,6 @@ if (isBindMode) {
 
     checkFriendStatus(res.applyId);
 
-    setTimeout(function () {
-      window.location.replace(LINE_ADD_FRIEND_URL);
-    }, 500);
-  };
-
   const apiParams = new URLSearchParams();
   apiParams.set("action", "lineCallback");
   apiParams.set("code", code);
@@ -188,6 +183,12 @@ if (isBindMode) {
           setMessage("資料已送出", "系統尚未確認您已加入官方 LINE。", false);
           setSubText("若已加入，系統後續可再由後台更新確認。");
         }
+
+            setTimeout(function () {
+      window.location.replace(LINE_ADD_FRIEND_URL);
+    }, 500);
+  };
+      
       };
 
       const apiParams = new URLSearchParams();
