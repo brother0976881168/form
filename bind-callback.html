@@ -356,13 +356,18 @@ if (res.reason === "already_bound") {
           return;
         }
 
-        if (res.reason === "bind_success") {
-          title.textContent = "綁定完成";
-          desc.textContent = "系統已將您的資料確認訊息傳送到官方 LINE。";
-          hidePhoneForm();
-          hideMessage();
-          return;
-        }
+if (res.reason === "bind_success") {
+  title.textContent = "綁定完成";
+  desc.textContent = "系統即將返回官方 LINE。";
+  hidePhoneForm();
+  hideMessage();
+
+  setTimeout(function () {
+    location.href = LINE_ADD_FRIEND_URL;
+  }, 1000);
+
+  return;
+}
 
         showMessage("系統回傳狀態異常，請稍後再試。", true);
       };
