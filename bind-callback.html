@@ -259,6 +259,21 @@
       document.body.appendChild(script);
     }
 
+    function checkFriendStatus(applyId) {
+  if (!applyId) return;
+
+  window.handleFriendStatus = function (res) {
+    return;
+  };
+
+  const params = new URLSearchParams();
+  params.set("action", "checkFriendStatus");
+  params.set("applyId", applyId);
+  params.set("callback", "handleFriendStatus");
+
+  jsonp(API_URL + "?" + params.toString(), "jsonpFriendStatusScript");
+}
+
     function callBindLineCallback(code, state) {
       window.handleBindLineCallback = function (res) {
         hideLoading();
@@ -361,6 +376,9 @@ if (res.reason === "bind_success") {
   desc.textContent = "系統即將返回官方 LINE。";
   hidePhoneForm();
   hideMessage();
+
+    checkFriendStatus(res.applyId);
+
 
   setTimeout(function () {
     location.href = LINE_ADD_FRIEND_URL;
