@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <title>LINE 補綁定</title>
+  <title>LINE 綁定確認中</title>
 
   <style>
     :root {
@@ -60,65 +60,7 @@
 
     .desc {
       color: var(--muted);
-      margin-bottom: 22px;
-    }
-
-    .field {
-      text-align: left;
-      margin-top: 22px;
-    }
-
-    label {
-      display: block;
-      font-weight: 800;
-      font-size: 16px;
-      margin-bottom: 8px;
-      color: var(--black);
-    }
-
-    input[type="tel"] {
-      width: 100%;
-      padding: 14px 14px;
-      border: 1px solid rgba(139, 107, 30, 0.35);
-      border-radius: 12px;
-      font-size: 18px;
-      background: #fffdf8;
-      color: var(--black);
-      outline: none;
-    }
-
-    input[type="tel"]:focus {
-      border-color: var(--gold);
-      box-shadow: 0 0 0 3px rgba(196, 154, 48, 0.18);
-    }
-
-    .btn {
-      display: inline-block;
-      width: 100%;
-      margin-top: 22px;
-      background: var(--gold);
-      color: var(--white);
-      text-decoration: none;
-      padding: 15px 24px;
-      border-radius: 999px;
-      font-weight: 900;
-      font-size: 17px;
-      border: none;
-      cursor: pointer;
-    }
-
-    .btn:active {
-      transform: translateY(1px);
-      background: var(--deep-gold);
-    }
-
-    .btn.secondary {
-      background: var(--deep-gold);
-    }
-
-    .btn.is-loading {
-      opacity: 0.65;
-      pointer-events: none;
+      margin-bottom: 0;
     }
 
     .message {
@@ -140,85 +82,70 @@
       border-color: rgba(155, 28, 28, 0.18);
     }
 
-    .form-link-box {
-      display: none;
-      margin-top: 16px;
+    .btn {
+      display: inline-block;
+      width: 100%;
+      margin-top: 22px;
+      background: var(--gold);
+      color: var(--white);
+      text-decoration: none;
+      padding: 15px 24px;
+      border-radius: 999px;
+      font-weight: 900;
+      font-size: 17px;
+      border: none;
+      cursor: pointer;
     }
 
-    .hint {
-      margin-top: 10px;
-      font-size: 13px;
-      color: var(--muted);
-      line-height: 1.6;
-      text-align: left;
+    .btn.secondary {
+      background: var(--deep-gold);
+    }
+
+    .loading {
+      margin: 22px auto 0;
+      width: 36px;
+      height: 36px;
+      border: 4px solid rgba(196, 154, 48, 0.25);
+      border-top-color: var(--gold);
+      border-radius: 50%;
+      animation: spin 0.9s linear infinite;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
     }
   </style>
 </head>
 
 <body>
   <div class="card">
-    <h1>LINE 補綁定</h1>
+    <h1>LINE 綁定確認中</h1>
 
     <p class="desc">
-      請輸入您填寫申請表時留下的手機號碼，
-      系統會協助您完成官方 LINE 綁定。
+      請稍候，系統正在確認您的 LINE 綁定狀態...
     </p>
 
-    <form id="bindForm">
-      <div class="field">
-        <label for="phone">手機號碼</label>
-        <input id="phone" name="phone" type="tel" inputmode="numeric" autocomplete="tel" placeholder="請輸入 09 開頭手機號碼" required>
-        <div class="hint">請輸入 09 開頭共 10 碼手機號碼。</div>
-      </div>
-
-      <button id="submitBtn" class="btn" type="submit">開始補綁定 LINE</button>
-    </form>
+    <div class="loading"></div>
 
     <div id="messageBox" class="message"></div>
 
-    <div id="formLinkBox" class="form-link-box">
-      <a id="formLink" class="btn secondary" href="https://brother0976881168.github.io/form/?source=other">
-        前往填寫申請表單
-      </a>
-    </div>
+    <a id="retryBtn" class="btn secondary" href="javascript:void(0)" style="display:none;">
+      重新確認
+    </a>
   </div>
 
   <script>
     const API_URL = "https://script.google.com/macros/s/AKfycbxtMnPWrtIkJHL9Q8z7pdCx-RWg8_KVmdGtLYI8Iy1AR2ei13mE3I1jSqm6gEhnTJ7Gpg/exec";
-    const DEFAULT_FORM_URL = "https://brother0976881168.github.io/form/?source=other";
 
-    const bindForm = document.getElementById("bindForm");
-    const phoneInput = document.getElementById("phone");
-    const submitBtn = document.getElementById("submitBtn");
     const messageBox = document.getElementById("messageBox");
-    const formLinkBox = document.getElementById("formLinkBox");
-    const formLink = document.getElementById("formLink");
+    const retryBtn = document.getElementById("retryBtn");
 
     function showMessage(message, isError) {
       messageBox.textContent = message;
       messageBox.className = isError ? "message error" : "message";
       messageBox.style.display = "block";
-    }
-
-    function hideMessage() {
-      messageBox.textContent = "";
-      messageBox.style.display = "none";
-      messageBox.className = "message";
-    }
-
-    function showFormLink(url) {
-      formLink.href = url || DEFAULT_FORM_URL;
-      formLinkBox.style.display = "block";
-    }
-
-    function hideFormLink() {
-      formLinkBox.style.display = "none";
-    }
-
-    function setLoading(isLoading) {
-      submitBtn.disabled = isLoading;
-      submitBtn.classList.toggle("is-loading", isLoading);
-      submitBtn.textContent = isLoading ? "資料查詢中..." : "開始補綁定 LINE";
     }
 
     function jsonp(url, scriptId) {
@@ -231,76 +158,32 @@
       document.body.appendChild(script);
     }
 
-    bindForm.addEventListener("submit", function (e) {
-      e.preventDefault();
+    function startBindLineLogin() {
+      retryBtn.style.display = "none";
+      messageBox.style.display = "none";
 
-      hideMessage();
-      hideFormLink();
+      window.handleStartBindLineLogin = function (res) {
+        if (!res || !res.ok || !res.loginUrl) {
+          showMessage(res && res.message ? res.message : "LINE 綁定確認失敗，請稍後再試。", true);
+          retryBtn.style.display = "inline-block";
+          return;
+        }
 
-      const phone = phoneInput.value.trim();
-
-      if (!phone) {
-        showMessage("請輸入手機號碼。", true);
-        return;
-      }
-
-      if (!/^09\d{8}$/.test(phone)) {
-        showMessage("手機格式錯誤，請輸入 09 開頭共 10 碼手機號碼。", true);
-        return;
-      }
-
-      setLoading(true);
-
-      window.handleStartBindByPhone = function (res) {
-        setLoading(false);
-
-if (!res || !res.ok) {
-  if (res && res.reason === "not_found") {
-    showMessage("查無申請資料，系統即將前往申請表單。", false);
-
-    setTimeout(function () {
-      location.href = res.formUrl || DEFAULT_FORM_URL;
-    }, 500);
-
-    return;
-  }
-
-  const message = res && res.message ? res.message : "查詢失敗，請稍後再試。";
-  showMessage(message, true);
-
-  return;
-}
-
-if (res.reason === "already_bound_close") {
-  showMessage("您已完成綁定", false);
-
-  setTimeout(function () {
-    location.href = "https://line.me/R/ti/p/@162ftert";
-  }, 1000);
-
-  return;
-}
-
-if (res.loginUrl) {
-  showMessage("已找到您的申請資料，系統即將前往 LINE 授權頁面。", false);
-
-  setTimeout(function () {
-    location.href = res.loginUrl;
-  }, 500);
-
-  return;
-}
-
-showMessage("已找到資料，但未取得 LINE 授權網址，請稍後再試。", true);
+        location.href = res.loginUrl;
       };
 
       const params = new URLSearchParams();
-      params.set("action", "startBindByPhone");
-      params.set("phone", phone);
-      params.set("callback", "handleStartBindByPhone");
+      params.set("action", "startBindLineLogin");
+      params.set("callback", "handleStartBindLineLogin");
 
-      jsonp(API_URL + "?" + params.toString(), "jsonpStartBindByPhoneScript");
+      jsonp(API_URL + "?" + params.toString(), "jsonpStartBindLineLoginScript");
+    }
+
+    retryBtn.addEventListener("click", function () {
+      startBindLineLogin();
     });
+
+    startBindLineLogin();
   </script>
 </body>
 </html>
