@@ -200,6 +200,7 @@
   <script>
     const API_URL = "https://script.google.com/macros/s/AKfycbxtMnPWrtIkJHL9Q8z7pdCx-RWg8_KVmdGtLYI8Iy1AR2ei13mE3I1jSqm6gEhnTJ7Gpg/exec";
     const DEFAULT_FORM_URL = "https://brother0976881168.github.io/form/?source=other";
+    const LINE_ADD_FRIEND_URL = "https://line.me/R/ti/p/@162ftert";
 
     const title = document.getElementById("title");
     const desc = document.getElementById("desc");
@@ -269,13 +270,18 @@
           return;
         }
 
-        if (res.reason === "already_bound") {
-          title.textContent = "您已綁定過囉！";
-          desc.textContent = "您的 LINE 已完成綁定。";
-          hidePhoneForm();
-          hideMessage();
-          return;
-        }
+if (res.reason === "already_bound") {
+  title.textContent = "您已綁定過囉！";
+  desc.textContent = "系統即將返回官方 LINE。";
+  hidePhoneForm();
+  hideMessage();
+
+  setTimeout(function () {
+    location.href = LINE_ADD_FRIEND_URL;
+  }, 1000);
+
+  return;
+}
 
         if (res.reason === "need_phone") {
           currentBindToken = res.bindToken || "";
