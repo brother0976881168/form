@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>常見問題 QA｜哥中之哥找阿哥</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: "Noto Sans TC", "Microsoft JhengHei", Arial, sans-serif;
+      background: #F4F0E8;
+      color: #1A1714;
+      line-height: 1.8;
+    }
+
+    .page {
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at top left, rgba(182, 142, 58, 0.18), transparent 34%),
+        linear-gradient(180deg, #F4F0E8 0%, #EDE8DC 100%);
+      padding: 28px 14px 48px;
+    }
+
+    .wrap {
+      width: 100%;
+      max-width: 920px;
+      margin: 0 auto;
+    }
+
+    .hero {
+      background: linear-gradient(135deg, #1A1714 0%, #332A1D 58%, #8B6B1E 100%);
+      color: #FFFFFF;
+      border-radius: 24px;
+      padding: 34px 24px 30px;
+      box-shadow: 0 18px 48px rgba(26, 23, 20, 0.18);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::after {
+      content: "";
+      position: absolute;
+      right: -80px;
+      top: -80px;
+      width: 220px;
+      height: 220px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.12);
+    }
+
+    .hero .tag {
+      display: inline-block;
+      color: #E8D08A;
+      border: 1px solid rgba(232, 208, 138, 0.55);
+      border-radius: 999px;
+      padding: 4px 14px;
+      font-size: 14px;
+      letter-spacing: 0.08em;
+      margin-bottom: 14px;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(30px, 6vw, 46px);
+      line-height: 1.22;
+      letter-spacing: 0.04em;
+    }
+
+    .hero p {
+      margin: 14px 0 0;
+      max-width: 680px;
+      color: rgba(255, 255, 255, 0.86);
+      font-size: 16px;
+    }
+
+    .notice {
+      margin: 18px 0 22px;
+      background: rgba(255, 255, 255, 0.72);
+      border: 1px solid rgba(139, 107, 30, 0.18);
+      border-radius: 18px;
+      padding: 16px 18px;
+      color: #4B4032;
+      box-shadow: 0 12px 30px rgba(26, 23, 20, 0.06);
+    }
+
+    .toolbar {
+      display: flex;
+      gap: 12px;
+      margin: 0 0 18px;
+      align-items: center;
+    }
+
+    .search {
+      width: 100%;
+      border: 1px solid rgba(139, 107, 30, 0.32);
+      background: rgba(255, 255, 255, 0.86);
+      color: #1A1714;
+      border-radius: 999px;
+      padding: 13px 18px;
+      font-size: 16px;
+      outline: none;
+      box-shadow: 0 10px 24px rgba(26, 23, 20, 0.06);
+    }
+
+    .search:focus {
+      border-color: #8B6B1E;
+      box-shadow: 0 0 0 4px rgba(139, 107, 30, 0.12);
+    }
+
+    .faq-list {
+      display: grid;
+      gap: 12px;
+    }
+
+    details {
+      background: rgba(255, 255, 255, 0.82);
+      border: 1px solid rgba(139, 107, 30, 0.18);
+      border-radius: 18px;
+      overflow: hidden;
+      box-shadow: 0 12px 28px rgba(26, 23, 20, 0.06);
+    }
+
+    details[open] {
+      border-color: rgba(139, 107, 30, 0.46);
+      background: #FFFDF8;
+    }
+
+    summary {
+      cursor: pointer;
+      list-style: none;
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 17px 18px;
+      font-weight: 700;
+      color: #1A1714;
+      font-size: 17px;
+    }
+
+    summary::-webkit-details-marker {
+      display: none;
+    }
+
+    .num {
+      flex: 0 0 auto;
+      min-width: 46px;
+      height: 30px;
+      border-radius: 999px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: #8B6B1E;
+      color: #FFFFFF;
+      font-size: 13px;
+      letter-spacing: 0.03em;
+      margin-top: 1px;
+    }
+
+    .qtext {
+      flex: 1;
+      padding-right: 8px;
+    }
+
+    .arrow {
+      flex: 0 0 auto;
+      width: 22px;
+      height: 22px;
+      border-right: 2px solid #8B6B1E;
+      border-bottom: 2px solid #8B6B1E;
+      transform: rotate(45deg);
+      margin-top: 0;
+      transition: transform 0.2s ease;
+    }
+
+    details[open] .arrow {
+      transform: rotate(225deg);
+      margin-top: 8px;
+    }
+
+    .answer {
+      padding: 0 18px 20px 76px;
+      color: #4B4032;
+      font-size: 16px;
+      white-space: pre-line;
+    }
+
+    .answer a {
+      color: #8B6B1E;
+      font-weight: 700;
+      word-break: break-all;
+    }
+
+    .cta {
+      margin-top: 22px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .btn {
+      display: block;
+      text-align: center;
+      text-decoration: none;
+      border-radius: 16px;
+      padding: 15px 16px;
+      font-weight: 800;
+      letter-spacing: 0.03em;
+    }
+
+    .btn-primary {
+      background: #8B6B1E;
+      color: #FFFFFF;
+      box-shadow: 0 14px 28px rgba(139, 107, 30, 0.24);
+    }
+
+    .btn-dark {
+      background: #1A1714;
+      color: #FFFFFF;
+      box-shadow: 0 14px 28px rgba(26, 23, 20, 0.18);
+    }
+
+    .empty {
+      display: none;
+      text-align: center;
+      padding: 28px 12px;
+      color: #6D6256;
+    }
+
+    @media (max-width: 640px) {
+      .page {
+        padding: 18px 10px 34px;
+      }
+
+      .hero {
+        border-radius: 20px;
+        padding: 28px 18px 24px;
+      }
+
+      summary {
+        padding: 15px 14px;
+        font-size: 16px;
+        gap: 10px;
+      }
+
+      .num {
+        min-width: 42px;
+        height: 28px;
+        font-size: 12px;
+      }
+
+      .answer {
+        padding: 0 14px 18px 66px;
+        font-size: 15px;
+      }
+
+      .cta {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <div class="wrap">
+      <section class="hero">
+        <span class="tag">FAQ</span>
+        <h1>常見問題</h1>
+        <p>以下整理常見諮詢問題，您可以先查看說明，或直接填寫表單讓系統建立資料。</p>
+      </section>
+
+      <div class="notice">
+        若您已填寫表單並完成 LINE 綁定，可直接在官方 LINE 補充資料，方便後續協助評估。
+      </div>
+
+      <div class="toolbar">
+        <input id="searchInput" class="search" type="search" placeholder="搜尋問題，例如：利息、汽車、聯徵、地址" />
+      </div>
+
+      <section id="faqList" class="faq-list">
+        <details class="faq-item" open>
+          <summary><span class="num">Q1</span><span class="qtext">我需要提供什麼資料？</span><span class="arrow"></span></summary>
+          <div class="answer">雙證件和可提供的擔保品資料，以及方便聯繫的時間。若有汽車、機車、房屋、土地、黃金、名錶、精品包、3C、機械設備等項目，都可以先傳型照照片 有借過一樣可以傳資料 和相關文件提供給我們評估。不會先上聯徵請安心</div>
+        </details>
+
+        <details class="faq-item">
+          <summary><span class="num">Q2</span><span class="qtext">沒有擔保品 或沒東西可以諮詢嗎？</span><span class="arrow"></span></summary>
+          <div class="answer">可以先填寫諮詢表單，系統會依照您的資金需求與目前情況做初步分類。但若沒有擔保品，可承作的額度與條件會需要進一步另外評估。</div>
+        </details>
+
+        <details class="faq-item">
+          <summary><span class="num">Q3</span><span class="qtext">可以借多少？</span><span class="arrow"></span></summary>
+          <div class="answer">可借金額會依照您提供的擔保品種類、價值、保存狀況、是否仍有貸款，以及您的資金需求綜合評估。不是每一項擔保品都能直接核到相同額度。（有貸款物品一樣都可以評估）</div>
+        </details>
+
+        <details class="faq-item">
+          <summary><span class="num">Q4</span><span class="qtext">多久可以知道結果？</span><span class="arrow"></span></summary>
+          <div class="answer">資料完整的情況下，可以先做初步評估。若擔保品資料清楚、聯絡方式正確，後續確認會比較快。</div>
+        </details>
+
+        <details class="faq-item">
+          <summary><span class="num">Q5</span><span class="qtext">會查聯徵嗎？</span><span class="arrow"></span></summary>
+          <div class="answer">不以銀行聯徵作為主要審核方式，重點會放在擔保品與可處理性。不過實際仍以個案評估為準。 沒有往來前 銀行聯徵當鋪系統聯徵都部會有</div>
+        </details>
+
+        <details class="faq-item">
+          <summary><span class="num">Q6</span><span class="qtext">會影響信用嗎？</span><span class="arrow"></span></summary>
+          <div class="answer">擔保品借款和銀行信用貸款不同，處理方式也不同，建議先確認您要辦理的是哪一種方案。</div>
+        </details>
+
+        <details class="faq-item">
+          <summary><span class="num">Q7</span><span class="qtext">利息怎麼算？</span><span class="arrow"></span></summary>
+          <div class="answer">利息會依照借款方式、金額、期間與擔保品條件評估。</div>
+        </details>
+
+        <details class="faq-item">
+          <summary><span class="num">Q8</span><span class="qtext">會不會有手續費 ，代辦費？</span><span class="arrow"></span></summary>
+          <div class="answer">沒有手續費 代辦費哦。</div>
+        </details>
+
+        <details class="faq-item">
+          <summary><span class="num">Q9</span><span class="qtext">可以提前還款嗎？</span><span class="arrow"></span></summary>
+          <div class="answer">可以提前清償，如有此需求請來訊留言。 我們沒有綁約 所以也沒有違約金</div>
+        </details>
+
+        <details class="faq-item">
+          <summary><span class="num">Q10</span><span class="qtext">如果短期還不出來怎麼辦？</span><span class="arrow"></span></summary>
+          <div class="answer">若有短期週轉壓力，請事先與我們溝通，可以有比較彈性的還款計劃。也可以設定寬限期專案 初期幾期只給息 幾個月後再本+息。</div>
+        </details>
+
+        <details class="faq-item">
+          <summary><span class="num">Q11</span><span class="qtext">汽車或機車一定要留下來嗎？</span><span class="arrow"></span></summary>
+          <div class="answer">基本上都可以配合您的需求 。要依實際狀況評估。</div>
+        </details>
+
+        <details class="faq-item">
+          <summary><span class="num">Q12</span><span class="qtext">車子還有貸款可以借嗎？</span><span class="arrow"></span></summary>
+          <div class="answer">可以的 跟車貸完全不衝突 ，但要看車輛殘值，以及目前車籍 車輛狀態。才能知道能辦理額度</div>
+        </details>
+
+        <details class="faq-item">
+          <summary><span class="num">Q13</span><span class="qtext">房屋或土地可以諮詢嗎？</span><span class="arrow"></span></summary>
+          <div class="answer">可以。我們有代辦 房屋、土地通常要看權狀、持分、是否有貸款、設定狀況、地點與估值。若已有銀行貸款，融資、名間私人設定、也可以先評估是否還有空間。</div>
+        </details>
+
+        <details class="faq-item">
+          <summary><span class="num">Q14</span><span class="qtext">黃金、名錶、精品包，其他貴金屬可以借嗎？</span><span class="arrow"></span></summary>
+          <div class="answer">可以先評估。通常會看品牌、品項、真偽、保存狀況、配件完整度、目前市場流通性與估值。</div>
+        </details>
+
+        <details class="faq-item">
+          <summary><span class="num">Q15</span><span class="qtext">資料會不會外洩？</span><span class="arrow"></span></summary>
+          <div class="answer">我們會保護客戶個資與借款資訊，絕對保障您的個人隱私。</div>
+        </details>
+
+        <details class="faq-item">
+          <summary><span class="num">Q16</span><span class="qtext">我填表後會有人打電話嗎？</span><span class="arrow"></span></summary>
+          <div class="answer">系統會先依照您填寫的資料進行初步分類，後續可透過 LINE 與您確認資料。如果需要進一步評估，會再依您提供的聯絡方式聯繫。</div>
+        </details>
+
+        <details class="faq-item">
+          <summary><span class="num">Q17</span><span class="qtext">資料填錯怎麼辦？</span><span class="arrow"></span></summary>
+          <div class="answer">可以直接在 LINE 回覆正確資料，例如手機、資金需求、擔保品項目或來源平台，系統會依照您最新提供的資訊協助確認。</div>
+        </details>
+
+        <details class="faq-item">
+          <summary><span class="num">Q18</span><span class="qtext">如果我沒有填過表單怎麼辦？</span><span class="arrow"></span></summary>
+          <div class="answer">請先填寫諮詢表單，讓系統建立基本資料後，才能依照您的需求與擔保品協助初步評估。
+<a href="https://brother0976881168.github.io/form/?source=other">https://brother0976881168.github.io/form/?source=other</a></div>
+        </details>
+
+        <details class="faq-item">
+          <summary><span class="num">Q19</span><span class="qtext">跟阿哥借款安全嗎？</span><span class="arrow"></span></summary>
+          <div class="answer">我們擁有合法登記執照、在業界已服務多年，費用清楚、合約完整、利率合規，程序絕對合法，不會對客戶提出不合理的要求，保證不會外流客戶的個資。</div>
+        </details>
+
+        <details class="faq-item">
+          <summary><span class="num">Q20</span><span class="qtext">辦理前要注意什麼？</span><span class="arrow"></span></summary>
+          <div class="answer">辦理前，建議您先確認自己的資金需求、可提供的擔保品，以及預計還款時間。
+
+我們會依照您填寫的資料協助初步了解狀況，包含資金需求、擔保品類型與可評估方向。正式辦理前，也會讓您清楚了解相關條件與流程，不會在資訊不清楚的情況下要求您做決定。</div>
+        </details>
+
+        <details class="faq-item">
+          <summary><span class="num">Q21</span><span class="qtext">可以線上先評估嗎？</span><span class="arrow"></span></summary>
+          <div class="answer">可以。您可以先填寫資金需求與擔保品項目，系統會先建立資料，後續再依實際情況確認是否需要補充照片、文件或其他資料。</div>
+        </details>
+
+        <details class="faq-item">
+          <summary><span class="num">Q22</span><span class="qtext">我很急，可以今天處理嗎？</span><span class="arrow"></span></summary>
+          <div class="answer">通常聯繫上 約公司碰面 當下可以拿到款項、可以先提供資料做初步評估。是否能快速處理，會依資料完整度、擔保品種類、聯絡狀況與實際審核結果而定。</div>
+        </details>
+
+        <details class="faq-item">
+          <summary><span class="num">Q23</span><span class="qtext">你們是當鋪嗎？</span><span class="arrow"></span></summary>
+          <div class="answer">我們會依照你的需求提出適合你的方案，也不會事先收費 可以先把你的狀況提出 給你合適的建議</div>
+        </details>
+
+        <details class="faq-item">
+          <summary><span class="num">Q24</span><span class="qtext">你們有扣什麼費用？第一期利息嗎？</span><span class="arrow"></span></summary>
+          <div class="answer">我們都沒有扣任何費用、以及第一期利息、不管金額多少都是實借實拿到手</div>
+        </details>
+
+        <details class="faq-item">
+          <summary><span class="num">Q25</span><span class="qtext">一定要到現場辦理嗎？能派專員來找我嗎？</span><span class="arrow"></span></summary>
+          <div class="answer">我們是實體店面的，所以希望你來現場談現場也備有錄音錄影保障，彼此雙方談談內容，有借款成功收的費用也都有記錄，比較不會像約在外面洽談簽約沒有任何紀錄依據 ，收費方式前面後面的不一樣</div>
+        </details>
+
+        <details class="faq-item">
+          <summary><span class="num">Q26</span><span class="qtext">你是阿哥本人嗎？還是助理？</span><span class="arrow"></span></summary>
+          <div class="answer">阿哥親自都會在線上回覆，如有疑慮，所以比較慢 請耐心等待、也可以以預約視訊洽談 增加信任度。</div>
+        </details>
+
+        <details class="faq-item">
+          <summary><span class="num">Q27</span><span class="qtext">你以上提的東西我都沒有 還可以借嗎？</span><span class="arrow"></span></summary>
+          <div class="answer">「我們這邊案件一定要有擔保品，若你本人沒有，也可以幫忙問看看家人或兄弟姊妹是否有可協助的物品，我們再幫你評估。」 你有勞健保嗎？</div>
+        </details>
+
+        <details class="faq-item">
+          <summary><span class="num">Q28</span><span class="qtext">方便通話嗎？ 方便視訊嗎？</span><span class="arrow"></span></summary>
+          <div class="answer">請留下你的電話號碼， 或有空直接撥打0927823313 視訊的話需要提前預約建議先打電話 約時間視訊。</div>
+        </details>
+
+        <details class="faq-item">
+          <summary><span class="num">Q29</span><span class="qtext">請問公司地址？</span><span class="arrow"></span></summary>
+          <div class="answer">📍辦理地點：桃園市永安路191號
+
+這是我們安排的指定會面地點，大目標，主要保障您的隱私，請放心。
+
+🚗 確定辦理的話，請提前一天預約車輛。
+
+當天攜帶：雙證件、汽車行照正本、汽車本體。
+
+⚠️ 確定要辦理，請先不要再對外送件，避免多次查詢影響額度。</div>
+        </details>
+
+        <details class="faq-item">
+          <summary><span class="num">Q30</span><span class="qtext">我想整合 我想轉貸 我想轉當</span><span class="arrow"></span></summary>
+          <div class="answer">你這種問題，阿哥我專門在做這種整合，先把你資訊、有什麼擔保品，或沒有擔保品 都跟傳給我 阿哥親自與您安排聯繫</div>
+        </details>
+      </section>
+
+      <div id="empty" class="empty">找不到符合的問題。</div>
+
+      <div class="cta">
+        <a class="btn btn-primary" href="https://brother0976881168.github.io/form/?source=other">填寫諮詢表單</a>
+        <a class="btn btn-dark" href="https://line.me/R/ti/p/@162ftert">加入官方 LINE</a>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    const searchInput = document.getElementById('searchInput');
+    const faqItems = Array.from(document.querySelectorAll('.faq-item'));
+    const empty = document.getElementById('empty');
+
+    searchInput.addEventListener('input', function () {
+      const keyword = this.value.trim().toLowerCase();
+      let visibleCount = 0;
+
+      faqItems.forEach(function (item) {
+        const text = item.innerText.toLowerCase();
+        const matched = keyword === '' || text.includes(keyword);
+        item.style.display = matched ? '' : 'none';
+
+        if (matched) {
+          visibleCount++;
+          if (keyword !== '') item.open = true;
+        }
+      });
+
+      empty.style.display = visibleCount === 0 ? 'block' : 'none';
+    });
+  </script>
+</body>
+</html>
