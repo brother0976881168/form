@@ -880,6 +880,20 @@ if (res.loginUrl) {
     fbq('track', 'Lead');
   }
 
+  if (window.ttq && typeof ttq.track === "function") {
+    ttq.track('SubmitForm');
+  }
+
+  setTimeout(function () {
+    location.href = res.loginUrl;
+  }, 300);
+
+  return;
+}
+  if (typeof fbq === "function") {
+    fbq('track', 'Lead');
+  }
+
   setTimeout(function () {
     location.href = res.loginUrl;
   }, 300);
