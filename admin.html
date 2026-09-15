@@ -226,6 +226,54 @@
       white-space: nowrap;
     }
 
+    .collateral-cell {
+  max-width: 260px;
+  min-width: 180px;
+  white-space: normal;
+  word-break: break-word;
+  line-height: 1.5;
+}
+
+.delete-cell {
+  text-align: center;
+  min-width: 56px;
+}
+
+.delete-btn {
+  border: none;
+  background: #fff1f1;
+  color: var(--danger);
+  border-radius: 999px;
+  width: 32px;
+  height: 32px;
+  cursor: pointer;
+  font-size: 17px;
+  font-weight: 900;
+}
+
+.report-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 0 0 12px;
+}
+
+.report-title-row h2 {
+  margin: 0;
+  font-size: 18px;
+  color: var(--deep-gold);
+}
+
+.export-link {
+  color: var(--deep-gold);
+  font-size: 14px;
+  font-weight: 900;
+  text-decoration: underline;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
     th {
       position: sticky;
       top: 0;
@@ -381,8 +429,10 @@
       <div id="globalSuccess" class="success"></div>
 
       <div class="card">
-        <h2 style="margin:0 0 12px;font-size:18px;color:var(--deep-gold);">統計報表</h2>
-
+<div class="report-title-row">
+  <h2>統計報表</h2>
+  <a class="export-link" href="javascript:void(0)" onclick="exportMonthlyReport()">匯出報表</a>
+</div>
         <div class="stats-grid">
           <div class="stat">
             <div class="stat-title">總人數</div>
@@ -510,14 +560,15 @@
       <div class="card">
         <div class="table-tools">
           <div id="listCount">共 0 筆</div>
-          <div>每頁 50 筆，填表時間由新到舊</div>
+          <div>每頁 10 筆，填表時間由新到舊</div>
         </div>
 
         <div class="table-wrap">
           <table>
             <thead>
-              <tr>
-                <th>填表時間</th>
+<tr>
+  <th>刪除</th>
+  <th>填表時間</th>
                 <th>來源平台</th>
                 <th>裝置</th>
                 <th>手機</th>
@@ -553,7 +604,7 @@
 
   <script>
     const API_URL = "https://script.google.com/macros/s/AKfycbxtMnPWrtIkJHL9Q8z7pdCx-RWg8_KVmdGtLYI8Iy1AR2ei13mE3I1jSqm6gEhnTJ7Gpg/exec";
-    const PAGE_SIZE = 50;
+    const PAGE_SIZE = 10;
 
     const COLLATERAL_FIELDS = [
       "汽車",
@@ -771,14 +822,17 @@
         const tr = document.createElement("tr");
         const applyId = row["申請編號"] || "";
 
-        tr.innerHTML = `
-          <td>${escapeHtml(row["填表時間"] || "")}</td>
+tr.innerHTML = `
+  <td class="delete-cell">
+    <button class="delete-btn" type="button" title="刪除" onclick="deleteApplication('${escapeJs(applyId)}', this)">×</button>
+  </td>
+  <td>${escapeHtml(row["填表時間"] || "")}</td>
           <td>${escapeHtml(row["來源平台"] || "")}</td>
           <td>${escapeHtml(row["裝置"] || "")}</td>
           <td>${escapeHtml(cleanDisplayPhone(row["手機"] || ""))}</td>
           <td>${escapeHtml(row["資金需求"] || "")}</td>
-          <td>${escapeHtml(row._collateralText || "")}</td>
-          <td>${renderAvatar(row["LINE頭像網址"])}</td>
+<td class="collateral-cell">${escapeHtml(row._collateralText || "")}</td>
+<td>${renderAvatar(row["LINE頭像網址"])}</td>
           <td>${escapeHtml(row["LINE顯示名稱"] || "")}</td>
           <td>${renderBadge(row["LINE綁定狀態"])}</td>
           <td data-friend-cell="${escapeAttr(applyId)}">${renderFriendBadge(row["官方LINE好友狀態"])}</td>
@@ -911,6 +965,78 @@
         row[header] = value;
       }
     }
+
+    function deleteApplication(applyId, btn) {
+  if (!applyId) {
+    showGlobalError("缺少申請編號");
+    return;
+  }
+
+  const ok = confirm("確定要刪除這筆資料嗎？刪除後無法復原。");
+  if (!ok) return;
+
+  btn.disabled = true;
+  btn.textContent = "...";
+
+  jsonp({
+    action: "deleteApplication",
+    password: adminPassword,
+    applyId: applyId
+  }, "handleDeleteApplication_" + Date.now(), function (res) {
+    if (!res || !res.ok) {
+      btn.disabled = false;
+      btn.textContent = "×";
+      showGlobalError(res && res.message ? res.message : "刪除失敗");
+      return;
+    }
+
+    allRows = allRows.filter(function (row) {
+      return row["申請編號"] !== applyId;
+    });
+
+    applyFilters();
+    renderStats(allRows);
+    showGlobalSuccess("刪除完成");
+  });
+}
+
+
+
+function exportMonthlyReport() {
+  clearGlobalMessage();
+
+  jsonp({
+    action: "exportMonthlySourceReport",
+    password: adminPassword
+  }, "handleExportMonthlyReport_" + Date.now(), function (res) {
+    if (!res || !res.ok) {
+      showGlobalError(res && res.message ? res.message : "匯出失敗");
+      return;
+    }
+
+    const csv = res.csv || "";
+    const filename = res.filename || "當月每日各來源統計表.csv";
+
+    const blob = new Blob([csv], {
+      type: "text/csv;charset=utf-8;"
+    });
+
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+
+    setTimeout(function () {
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }, 300);
+
+    showGlobalSuccess("報表已匯出");
+  });
+}
 
     function recheckFriend(applyId, btn) {
       if (!applyId) {
