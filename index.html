@@ -869,39 +869,32 @@ params.set("callback", "handleSubmitResult");
 window.handleSubmitResult = function (res) {
   if (!res || !res.ok) {
     showError(res && res.message ? res.message : "送出失敗");
-document.getElementById("submitBtn").disabled = false;
-document.getElementById("submitBtn").classList.remove("is-loading");
-document.getElementById("loadingText").style.display = "none";
+    document.getElementById("submitBtn").disabled = false;
+    document.getElementById("submitBtn").classList.remove("is-loading");
+    document.getElementById("loadingText").style.display = "none";
     return;
   }
 
-if (res.loginUrl) {
-  if (typeof fbq === "function") {
-    fbq('track', 'Lead');
+  if (res.loginUrl) {
+    if (typeof fbq === "function") {
+      fbq('track', 'Lead');
+    }
+
+    if (window.ttq && typeof ttq.track === "function") {
+      ttq.track('SubmitForm');
+    }
+
+    setTimeout(function () {
+      location.href = res.loginUrl;
+    }, 300);
+
+    return;
   }
-
-  if (window.ttq && typeof ttq.track === "function") {
-    ttq.track('SubmitForm');
-  }
-
-  setTimeout(function () {
-    location.href = res.loginUrl;
-  }, 300);
-
-  return;
-}
-  if (typeof fbq === "function") {
-    fbq('track', 'Lead');
-  }
-
-  setTimeout(function () {
-    location.href = res.loginUrl;
-  }, 300);
-
-  return;
-}
 
   showError("未取得 LINE 授權網址");
+  document.getElementById("submitBtn").disabled = false;
+  document.getElementById("submitBtn").classList.remove("is-loading");
+  document.getElementById("loadingText").style.display = "none";
 };
 
 const script = document.createElement("script");
