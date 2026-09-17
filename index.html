@@ -305,19 +305,20 @@ var e=ttq._i[t]||[],n=0;n<ttq.methods.length;n++)ttq.setAndDefer(e,ttq.methods[n
   position: absolute;
   top: -40%;
   left: -80%;
-  width: 45%;
+  width: 55%;
   height: 180%;
   background: linear-gradient(
     120deg,
     transparent 0%,
-    rgba(255, 255, 255, 0.15) 35%,
-    rgba(255, 255, 255, 0.75) 50%,
-    rgba(255, 255, 255, 0.15) 65%,
+    rgba(255, 255, 255, 0.05) 30%,
+    rgba(255, 255, 255, 0.95) 50%,
+    rgba(255, 255, 255, 0.05) 70%,
     transparent 100%
   );
   transform: skewX(-20deg);
-  animation: buttonShine 5s ease-in-out infinite;
+  animation: buttonShine 5s linear infinite;
   pointer-events: none;
+  z-index: 2;
 }
 
 @keyframes buttonShine {
@@ -338,6 +339,8 @@ var e=ttq._i[t]||[],n=0;n<ttq.methods.length;n++)ttq.setAndDefer(e,ttq.methods[n
   width: 100%;
   height: auto;
   display: block;
+  position: relative;
+  z-index: 1;
 }
 
 .submit-img-btn:active {
