@@ -167,12 +167,37 @@ var e=ttq._i[t]||[],n=0;n<ttq.methods.length;n++)ttq.setAndDefer(e,ttq.methods[n
   z-index: 5;
   display: block;
   width: 300px;
+  overflow: hidden;
+  border-radius: 999px;
+}
+
+.hero-apply-btn::after {
+  content: "";
+  position: absolute;
+  top: -40%;
+  left: -80%;
+  width: 55%;
+  height: 180%;
+  background: linear-gradient(
+    120deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.05) 30%,
+    rgba(255, 255, 255, 0.95) 50%,
+    rgba(255, 255, 255, 0.05) 70%,
+    transparent 100%
+  );
+  transform: skewX(-20deg);
+  animation: buttonShine 5s linear infinite;
+  pointer-events: none;
+  z-index: 2;
 }
 
 .hero-apply-btn img {
   width: 100%;
   height: auto;
   display: block;
+  position: relative;
+  z-index: 1;
 }
 
 .hero-apply-btn:active {
