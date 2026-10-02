@@ -274,6 +274,19 @@
   white-space: nowrap;
 }
 
+.export-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.export-controls select {
+  width: auto;
+  min-width: 82px;
+  padding: 6px 8px;
+  font-size: 14px;
+}
+
     th {
       position: sticky;
       top: 0;
@@ -445,10 +458,30 @@
       <div id="globalSuccess" class="success"></div>
 
       <div class="card">
+        
 <div class="report-title-row">
   <h2>統計報表</h2>
-  <a class="export-link" href="javascript:void(0)" onclick="exportMonthlyReport()">匯出報表</a>
+
+  <div class="export-controls">
+    <select id="exportYear"></select>
+    <select id="exportMonth">
+      <option value="1">1月</option>
+      <option value="2">2月</option>
+      <option value="3">3月</option>
+      <option value="4">4月</option>
+      <option value="5">5月</option>
+      <option value="6">6月</option>
+      <option value="7">7月</option>
+      <option value="8">8月</option>
+      <option value="9">9月</option>
+      <option value="10">10月</option>
+      <option value="11">11月</option>
+      <option value="12">12月</option>
+    </select>
+    <a class="export-link" href="javascript:void(0)" onclick="exportMonthlyReport()">匯出報表</a>
+  </div>
 </div>
+        
         <div class="stats-grid">
           <div class="stat">
             <div class="stat-title">總人數</div>
@@ -725,10 +758,11 @@ let adminPassword = "";
         document.getElementById("loginView").classList.add("hidden");
         document.getElementById("adminView").classList.remove("hidden");
 
-        allRows = (res.rows || []).map(normalizeRow);
-        sortRowsByTimeDesc(allRows);
-        renderStats(allRows);
-        applyFilters();
+allRows = (res.rows || []).map(normalizeRow);
+sortRowsByTimeDesc(allRows);
+renderExportYearOptions(allRows);
+renderStats(allRows);
+applyFilters();
       });
     }
 
@@ -862,6 +896,51 @@ function renderSortIcons() {
       el.textContent = "◇";
     }
   });
+}
+
+    function renderExportYearOptions(rows) {
+  const yearSelect = document.getElementById("exportYear");
+  if (!yearSelect) return;
+
+  const now = new Date();
+  const currentYear = now.getFullYear();
+  const currentMonth = now.getMonth() + 1;
+
+  const years = {};
+
+  rows.forEach(function (row) {
+    const time = parseDateTime(row["填表時間"]);
+    if (!time) return;
+
+    const date = new Date(time);
+    const year = date.getFullYear();
+
+    if (year) {
+      years[year] = true;
+    }
+  });
+
+  years[currentYear] = true;
+
+  const yearList = Object.keys(years).sort(function (a, b) {
+    return Number(b) - Number(a);
+  });
+
+  yearSelect.innerHTML = "";
+
+  yearList.forEach(function (year) {
+    const option = document.createElement("option");
+    option.value = year;
+    option.textContent = year + "年";
+
+    if (Number(year) === currentYear) {
+      option.selected = true;
+    }
+
+    yearSelect.appendChild(option);
+  });
+
+  document.getElementById("exportMonth").value = String(currentMonth);
 }
 
     function renderStats(rows) {
@@ -1106,9 +1185,14 @@ tr.innerHTML = `
 function exportMonthlyReport() {
   clearGlobalMessage();
 
+  const year = document.getElementById("exportYear").value;
+  const month = document.getElementById("exportMonth").value;
+
   jsonp({
     action: "exportMonthlySourceReport",
-    password: adminPassword
+    password: adminPassword,
+    year: year,
+    month: month
   }, "handleExportMonthlyReport_" + Date.now(), function (res) {
     if (!res || !res.ok) {
       showGlobalError(res && res.message ? res.message : "匯出失敗");
@@ -1116,7 +1200,7 @@ function exportMonthlyReport() {
     }
 
     const csv = res.csv || "";
-    const filename = res.filename || "當月每日各來源統計表.csv";
+    const filename = res.filename || "每日各來源統計表.csv";
 
     const blob = new Blob([csv], {
       type: "text/csv;charset=utf-8;"
