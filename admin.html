@@ -283,6 +283,22 @@
       font-weight: 900;
     }
 
+    .sort-th {
+  border: none;
+  background: transparent;
+  color: var(--black);
+  font-weight: 900;
+  cursor: pointer;
+  padding: 0;
+  white-space: nowrap;
+}
+
+.sort-th span {
+  font-size: 12px;
+  margin-left: 4px;
+  color: var(--deep-gold);
+}
+
     tr:hover td {
       background: rgba(196, 154, 48, 0.06);
     }
@@ -568,30 +584,31 @@
             <thead>
 <tr>
   <th>刪除</th>
-  <th>填表時間</th>
-                <th>來源平台</th>
-                <th>裝置</th>
-                <th>手機</th>
-                <th>資金需求</th>
-                <th>擔保品</th>
-                <th>LINE頭像</th>
-                <th>LINE顯示名稱</th>
-                <th>LINE綁定狀態</th>
-                <th>官方LINE好友狀態</th>
-                <th>重新檢查</th>
-                <th>簡訊發送次數</th>
-                <th>簡訊發送成功次數</th>
-                <th>最後簡訊發送時間</th>
-                <th>最後簡訊成功時間</th>
-                <th>透過簡訊綁定LINE</th>
-                <th>最後聯絡時間</th>
-                <th>申請狀態</th>
-                <th>備註1</th>
-                <th>備註2</th>
-                <th>備註3</th>
-                <th>備註4</th>
-                <th>結案時間</th>
-              </tr>
+  <th><button class="sort-th" onclick="setSort('填表時間')">填表時間 <span data-sort-icon="填表時間">▼</span></button></th>
+  <th><button class="sort-th" onclick="setSort('來源平台')">來源平台 <span data-sort-icon="來源平台">◇</span></button></th>
+  <th><button class="sort-th" onclick="setSort('裝置')">裝置 <span data-sort-icon="裝置">◇</span></button></th>
+  <th><button class="sort-th" onclick="setSort('手機')">手機 <span data-sort-icon="手機">◇</span></button></th>
+  <th><button class="sort-th" onclick="setSort('資金需求')">資金需求 <span data-sort-icon="資金需求">◇</span></button></th>
+  <th><button class="sort-th" onclick="setSort('擔保品')">擔保品 <span data-sort-icon="擔保品">◇</span></button></th>
+  <th><button class="sort-th" onclick="setSort('LINE頭像網址')">LINE頭像 <span data-sort-icon="LINE頭像網址">◇</span></button></th>
+  <th><button class="sort-th" onclick="setSort('LINE顯示名稱')">LINE顯示名稱 <span data-sort-icon="LINE顯示名稱">◇</span></button></th>
+  <th><button class="sort-th" onclick="setSort('LINE綁定狀態')">LINE綁定狀態 <span data-sort-icon="LINE綁定狀態">◇</span></button></th>
+  <th><button class="sort-th" onclick="setSort('官方LINE好友狀態')">官方LINE好友狀態 <span data-sort-icon="官方LINE好友狀態">◇</span></button></th>
+  <th>重新檢查</th>
+  <th><button class="sort-th" onclick="setSort('簡訊發送次數')">簡訊發送次數 <span data-sort-icon="簡訊發送次數">◇</span></button></th>
+  <th><button class="sort-th" onclick="setSort('簡訊發送成功次數')">簡訊發送成功次數 <span data-sort-icon="簡訊發送成功次數">◇</span></button></th>
+  <th><button class="sort-th" onclick="setSort('最後簡訊發送時間')">最後簡訊發送時間 <span data-sort-icon="最後簡訊發送時間">◇</span></button></th>
+  <th><button class="sort-th" onclick="setSort('最後簡訊成功時間')">最後簡訊成功時間 <span data-sort-icon="最後簡訊成功時間">◇</span></button></th>
+  <th><button class="sort-th" onclick="setSort('透過簡訊綁定LINE')">透過簡訊綁定LINE <span data-sort-icon="透過簡訊綁定LINE">◇</span></button></th>
+  <th><button class="sort-th" onclick="setSort('最後聯絡時間')">最後聯絡時間 <span data-sort-icon="最後聯絡時間">◇</span></button></th>
+  <th><button class="sort-th" onclick="setSort('申請狀態')">申請狀態 <span data-sort-icon="申請狀態">◇</span></button></th>
+  <th><button class="sort-th" onclick="setSort('備註1')">備註1 <span data-sort-icon="備註1">◇</span></button></th>
+  <th><button class="sort-th" onclick="setSort('備註2')">備註2 <span data-sort-icon="備註2">◇</span></button></th>
+  <th><button class="sort-th" onclick="setSort('備註3')">備註3 <span data-sort-icon="備註3">◇</span></button></th>
+  <th><button class="sort-th" onclick="setSort('備註4')">備註4 <span data-sort-icon="備註4">◇</span></button></th>
+  <th><button class="sort-th" onclick="setSort('結案時間')">結案時間 <span data-sort-icon="結案時間">◇</span></button></th>
+</tr>
+              
             </thead>
             <tbody id="tableBody"></tbody>
           </table>
@@ -643,10 +660,12 @@
     
     const STATUS_LIST = ["未聯絡", "已聯絡", "未回覆", "失聯", "黑名單", "結案"];
 
-    let allRows = [];
-    let filteredRows = [];
-    let currentPage = 1;
-    let adminPassword = "";
+let allRows = [];
+let filteredRows = [];
+let currentPage = 1;
+let currentSortKey = "填表時間";
+let currentSortDir = "desc";
+let adminPassword = "";
 
     function login() {
       const password = document.getElementById("passwordInput").value.trim();
@@ -758,10 +777,92 @@
         return true;
       });
 
-      currentPage = 1;
-      renderTable();
-      renderPagination();
+applyCurrentSort();
+currentPage = 1;
+renderTable();
+renderPagination();
+renderSortIcons();
     }
+
+    function setSort(key) {
+  if (currentSortKey === key) {
+    currentSortDir = currentSortDir === "asc" ? "desc" : "asc";
+  } else {
+    currentSortKey = key;
+    currentSortDir = "asc";
+  }
+
+  applyCurrentSort();
+  currentPage = 1;
+  renderTable();
+  renderPagination();
+  renderSortIcons();
+}
+
+function applyCurrentSort() {
+  filteredRows.sort(function (a, b) {
+    const av = getSortValue(a, currentSortKey);
+    const bv = getSortValue(b, currentSortKey);
+
+    if (av === "" && bv !== "") return 1;
+    if (av !== "" && bv === "") return -1;
+    if (av === "" && bv === "") return 0;
+
+    let result = 0;
+
+    if (isDateSortField(currentSortKey)) {
+      result = parseDateTime(av) - parseDateTime(bv);
+    } else if (isNumberSortField(currentSortKey)) {
+      result = Number(av || 0) - Number(bv || 0);
+    } else {
+      result = String(av).localeCompare(String(bv), "zh-Hant");
+    }
+
+    return currentSortDir === "asc" ? result : -result;
+  });
+}
+
+function getSortValue(row, key) {
+  if (key === "擔保品") {
+    return row._collateralText || "";
+  }
+
+  if (key === "手機") {
+    return cleanDisplayPhone(row["手機"] || "");
+  }
+
+  return row[key] || "";
+}
+
+function isDateSortField(key) {
+  return [
+    "填表時間",
+    "最後簡訊發送時間",
+    "最後簡訊成功時間",
+    "透過簡訊綁定LINE",
+    "最後聯絡時間",
+    "結案時間"
+  ].includes(key);
+}
+
+function isNumberSortField(key) {
+  return [
+    "簡訊發送次數",
+    "簡訊發送成功次數"
+  ].includes(key);
+}
+
+function renderSortIcons() {
+  document.querySelectorAll("[data-sort-icon]").forEach(function (el) {
+    const key = el.getAttribute("data-sort-icon");
+
+    if (key === currentSortKey) {
+      el.textContent = currentSortDir === "asc" ? "▲" : "▼";
+    } else {
+      el.textContent = "◇";
+    }
+  });
+}
 
     function renderStats(rows) {
       const total = rows.length;
